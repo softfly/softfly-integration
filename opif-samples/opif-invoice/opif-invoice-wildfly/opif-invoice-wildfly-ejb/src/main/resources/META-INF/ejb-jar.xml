@@ -1,0 +1,42 @@
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         version="3.1">
+
+    <enterprise-beans>
+
+        <session>
+            <ejb-name>DocumentRecognize</ejb-name>
+            <ejb-class>pl.softfly.oipf.document.recognize.DocumentRecognizeBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>DocumentValidationScheme</ejb-name>
+            <ejb-class>pl.softfly.oipf.document.validation.scheme.DocumentValidationSchemeBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>DocumentBusinessValidation</ejb-name>
+            <ejb-class>pl.softfly.oipf.document.validation.business.DocumentBusinessValidationBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>DocumentParser</ejb-name>
+            <ejb-class>pl.softfly.oipf.document.parser.DocumentParserBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>DocumentTransformation</ejb-name>
+            <ejb-class>pl.softfly.oipf.document.transformation.DocumentTransformationBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>Endpoint</ejb-name>
+            <ejb-class>pl.softfly.oipf.endpoint.EndpointBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+
+
+    </enterprise-beans>
+
+</ejb-jar>
