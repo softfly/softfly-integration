@@ -34,7 +34,7 @@
     </licenses>
     <modules>
         <module>opif-invoice-wildfly-ejb</module>
-        <module>opif-invoice-wildfly-web</module>
+        <module>opif-invoice-wildfly-ws</module>
         <module>opif-invoice-wildfly-ear</module>
     </modules>
 
@@ -82,7 +82,7 @@
                 ourselves in every module -->
             <dependency>
                 <groupId>pl.softfly.opif.samples.invoice</groupId>
-                <artifactId>opif-invoice-wildfly-web</artifactId>
+                <artifactId>opif-invoice-wildfly-ws</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
                 <scope>compile</scope>

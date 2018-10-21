@@ -44,7 +44,7 @@
         <!-- Depend on the ejb module and war so that we can package them -->
         <dependency>
             <groupId>pl.softfly.opif.samples.invoice</groupId>
-            <artifactId>opif-invoice-wildfly-web</artifactId>
+            <artifactId>opif-invoice-wildfly-ws</artifactId>
             <type>war</type>
         </dependency>
         <dependency>
