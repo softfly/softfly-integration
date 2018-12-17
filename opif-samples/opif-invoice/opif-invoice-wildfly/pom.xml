@@ -36,6 +36,7 @@
         <module>opif-invoice-wildfly-ejb</module>
         <module>opif-invoice-wildfly-ws</module>
         <module>opif-invoice-wildfly-ear</module>
+		<module>opif-invoice-wildfly-jbpm</module>
     </modules>
 
     <properties>
