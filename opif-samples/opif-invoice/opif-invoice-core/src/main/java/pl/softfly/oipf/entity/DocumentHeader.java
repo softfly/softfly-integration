@@ -2,12 +2,15 @@ package pl.softfly.oipf.entity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 @XmlRootElement
 @Table
-public class DocumentHeader {
+public class DocumentHeader implements Serializable {
 
     @Id
     @GeneratedValue
@@ -47,6 +50,9 @@ public class DocumentHeader {
     }
 
     public List<DocumentBody> getBodies() {
+    	if (bodies == null) {
+    		bodies = new LinkedList<DocumentBody>();
+    	}
         return bodies;
     }
 

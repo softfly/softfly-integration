@@ -2,12 +2,14 @@ package pl.softfly.oipf.entity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @XmlRootElement
 @Table
-public class Participant {
+public class Participant implements Serializable {
 
     @Id
     @GeneratedValue

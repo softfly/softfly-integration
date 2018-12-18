@@ -1,5 +1,7 @@
 package pl.softfly.oipf.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -7,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @Table
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Endpoint {
+public class Endpoint implements Serializable {
 
     @Id
     @GeneratedValue

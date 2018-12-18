@@ -1,12 +1,14 @@
 package pl.softfly.oipf.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @XmlRootElement
 @Table
-public class DocumentBusinessType {
+public class DocumentBusinessType implements Serializable {
 
     @Id
     @GeneratedValue
