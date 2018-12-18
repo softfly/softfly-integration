@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class DocumentTransformationBean implements DocumentTransformation {
 
     private final static Logger LOGGER = Logger.getLogger(DocumentTransformationBean.class.getName());
-    
+
     @Override
     public DocumentBody transform(DocumentHeader sourceDocumentHeader, DictDocumentFormat targetDocumentFormat) {
         LOGGER.info(StringUtils.center("START", 30, "="));

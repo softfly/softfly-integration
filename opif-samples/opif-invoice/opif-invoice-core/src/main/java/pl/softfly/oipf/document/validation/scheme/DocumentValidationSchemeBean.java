@@ -17,7 +17,7 @@ public class DocumentValidationSchemeBean implements DocumentValidationScheme {
         LoggerUtil.end(LOGGER);
         return null;
     }
-    
+
     @Override
     public List<?> valid(DocumentHeader documentHeader) {
         LoggerUtil.start(LOGGER);

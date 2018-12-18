@@ -2,7 +2,6 @@ package pl.softfly.opif.samples.invoice.jbpm.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan("pl.softfly.opif.samples.invoice.jbpm.workitemhandler")

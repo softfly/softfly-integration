@@ -76,7 +76,8 @@ public class MainFlowEJB implements MainFlow {
     protected boolean process(DocumentBody documentBody) {
         // 4. Dermine recipients of document.
         List<Participant> recipients = documentBody.getDocumentHeader().getRecipients();
-        PARTICIPANT: for (Participant recipient : recipients) {
+        PARTICIPANT:
+        for (Participant recipient : recipients) {
             send(documentBody, recipient);
         }
         return true;

@@ -2,6 +2,7 @@ package pl.softfly.oipf.endpoint;
 
 import org.apache.commons.lang3.StringUtils;
 import pl.softfly.oipf.entity.DocumentBody;
+
 import java.util.logging.Logger;
 
 public class EndpointBean implements Endpoint {

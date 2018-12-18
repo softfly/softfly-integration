@@ -28,7 +28,7 @@ public class DocumentParserBean implements DocumentParser {
         LoggerUtil.end(LOGGER);
         return documentBody;
     }
-    
+
     @Override
     public DocumentHeader parse(DocumentHeader documentHeader) {
         LoggerUtil.start(LOGGER);

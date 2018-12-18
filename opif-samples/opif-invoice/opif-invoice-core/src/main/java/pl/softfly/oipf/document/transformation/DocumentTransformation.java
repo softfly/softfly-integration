@@ -5,9 +5,9 @@ import pl.softfly.oipf.entity.DocumentBody;
 import pl.softfly.oipf.entity.DocumentHeader;
 
 public interface DocumentTransformation {
-	
-	DocumentBody transform(DocumentHeader sourceDocumentHeader, DictDocumentFormat targetDocumentFormat);
 
-	DocumentBody transform(DocumentBody sourceDocumentBody, DictDocumentFormat targetDocumentFormat);
-	
+    DocumentBody transform(DocumentHeader sourceDocumentHeader, DictDocumentFormat targetDocumentFormat);
+
+    DocumentBody transform(DocumentBody sourceDocumentBody, DictDocumentFormat targetDocumentFormat);
+
 }

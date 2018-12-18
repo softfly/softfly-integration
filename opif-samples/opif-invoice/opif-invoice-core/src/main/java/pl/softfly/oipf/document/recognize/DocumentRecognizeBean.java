@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class DocumentRecognizeBean implements DocumentRecognize {
 
     private final static Logger LOGGER = Logger.getLogger(DocumentRecognizeBean.class.getName());
-    
+
     @Override
     public DictDocumentFormat recognize(DocumentBody documentBody) {
         LoggerUtil.start(LOGGER);
@@ -19,13 +19,13 @@ public class DocumentRecognizeBean implements DocumentRecognize {
         LoggerUtil.end(LOGGER);
         return documentFormat;
     }
-    
+
     @Override
     public DocumentHeader enrichRecognize(DocumentHeader documentHeader) {
-    	for (DocumentBody body: documentHeader.getBodies()) {
-    		body.setDocumentFormat(recognize(body));
-    	}
-    	return documentHeader;
+        for (DocumentBody body : documentHeader.getBodies()) {
+            body.setDocumentFormat(recognize(body));
+        }
+        return documentHeader;
     }
-    
+
 }

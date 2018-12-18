@@ -17,7 +17,7 @@ public class DocumentBusinessValidationBean implements DocumentBusinessValidatio
         LoggerUtil.end(LOGGER);
         return null;
     }
-    
+
     @Override
     public List<?> valid(DocumentHeader documentHeader) {
         LoggerUtil.start(LOGGER);
