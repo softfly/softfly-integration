@@ -9,10 +9,11 @@ import pl.softfly.oipf.utils.LoggerUtil;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-public class DocumentParserBean {
+public class DocumentParserBean implements DocumentParser {
 
     private final static Logger LOGGER = Logger.getLogger(DocumentParserBean.class.getName());
 
+    @Override
     public DocumentBody parse(DocumentBody documentBody) {
         LoggerUtil.start(LOGGER);
 
@@ -26,6 +27,20 @@ public class DocumentParserBean {
 
         LoggerUtil.end(LOGGER);
         return documentBody;
+    }
+    
+    @Override
+    public DocumentHeader parse(DocumentHeader documentHeader) {
+        LoggerUtil.start(LOGGER);
+
+        Participant p1 = new Participant();
+        p1.setEndpoints(Arrays.asList(new Endpoint()));
+        Participant p2 = new Participant();
+        p2.setEndpoints(Arrays.asList(new Endpoint()));
+        documentHeader.setRecipients(Arrays.asList(p1, p2));
+
+        LoggerUtil.end(LOGGER);
+        return documentHeader;
     }
 
 }

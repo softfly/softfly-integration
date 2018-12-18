@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Stateless
 @LocalBean
-public class MainFlowEJB {
+public class MainFlowEJB implements MainFlow {
 
     @EJB
     DocumentRecognizeBean documentRecognize;
@@ -48,6 +48,7 @@ public class MainFlowEJB {
         // TODO Auto-generated constructor stub
     }
 
+    @Override
     public DocumentHeader start(String inputDocument) {
         DocumentBody documentBody = new DocumentBody();
         documentBody.setBody(inputDocument);
@@ -73,23 +74,22 @@ public class MainFlowEJB {
     }
 
     protected boolean process(DocumentBody documentBody) {
-        // 4. Określ odbiorców dokumentu.
+        // 4. Dermine recipients of document.
         List<Participant> recipients = documentBody.getDocumentHeader().getRecipients();
-        PARTICIPANT:
-        for (Participant recipient : recipients) {
+        PARTICIPANT: for (Participant recipient : recipients) {
             send(documentBody, recipient);
         }
         return true;
     }
 
     protected boolean send(DocumentBody documentBody, Participant recipient) {
-        // 5. Określ punkt końcowy dostarczenia dokumentu do odbiorcy.
+        // 5. Determine the endpoint of recipient to deliver the document.
         for (Endpoint endpoint : recipient.getEndpoints()) {
             // Znajdź endpoint, dla którego można utworzyć dokument w odpowiednim formacie
             DocumentBody afterTransformDocumentBody = documentTransformation.transform(documentBody,
                     endpoint.getDictDocumentFormat());
             // 8. Wyślij dokument do odbiorcy.
-            if (endpointBean.send(afterTransformDocumentBody, recipient)) {
+            if (endpointBean.send(afterTransformDocumentBody, endpoint)) {
                 // 9. Powtórz krok 5,6 dla kolejnych odbiorców.
                 return true;
             }

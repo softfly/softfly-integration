@@ -11,7 +11,7 @@ import javax.jws.WebService;
 public class EndpointWS extends EndpointBean {
 
     @WebMethod
-    public boolean send(DocumentBody documentBody, Participant participant) {
-        return super.send(documentBody, participant);
+    public boolean send(DocumentBody documentBody, pl.softfly.oipf.entity.Endpoint endpoint) {
+        return super.send(documentBody, endpoint);
     }
 }

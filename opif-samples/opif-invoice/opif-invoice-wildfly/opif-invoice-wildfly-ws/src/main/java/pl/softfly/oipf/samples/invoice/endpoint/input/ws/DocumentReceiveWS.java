@@ -9,7 +9,7 @@ import javax.jws.WebService;
 import java.util.logging.Logger;
 
 @WebService
-public class DocumentReceiveWS extends MainFlowEJB {
+public class DocumentReceiveWS extends MainFlowEJB implements DocumentReceive {
 
     private final static Logger LOGGER = Logger.getLogger(DocumentReceiveWS.class.getName());
 
