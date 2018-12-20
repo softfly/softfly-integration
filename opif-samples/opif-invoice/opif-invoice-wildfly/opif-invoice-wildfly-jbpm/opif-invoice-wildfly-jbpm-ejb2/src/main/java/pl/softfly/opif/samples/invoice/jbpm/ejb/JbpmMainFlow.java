@@ -1,24 +1,22 @@
 package pl.softfly.opif.samples.invoice.jbpm.ejb;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
-import javax.ejb.Startup;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 
-@Startup
-@javax.ejb.Singleton
-@LocalBean
+@ApplicationScoped
 public class JbpmMainFlow {
 
-	@Inject
+	//@Inject
 	//@Singleton
 	private RuntimeManager singletonManager;
 
-	@PostConstruct
 	public void startProcess() {
 		RuntimeEngine runtime = singletonManager.getRuntimeEngine(null);
 		KieSession ksession = runtime.getKieSession();

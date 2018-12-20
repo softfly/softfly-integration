@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>opif-invoice-wildfly-jbpm</artifactId>
+		<groupId>pl.softfly.opif.samples.invoice</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>opif-invoice-wildfly-jbpm-ejb</artifactId>
+
+	<name>jBPM :: Sample Maven Project</name>
+	<packaging>ejb</packaging>
+
+	<properties>
+		<runtime.version>7.15.0.Final</runtime.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>pl.softfly.opif.samples.invoice</groupId>
+			<artifactId>oipf-invoice-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>pl.softfly.opif.samples.invoice</groupId>
+			<artifactId>opif-invoice-wildfly-jbpm-kjar</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.jbpm</groupId> <artifactId>jbpm-services-cdi</artifactId> 
+			<version>${runtime.version}</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-api</artifactId>
+			<version>${runtime.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jbpm</groupId>
+			<artifactId>jbpm-test</artifactId>
+			<version>${runtime.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Import the EJB API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the CDI API, we use provided scope as the API is included in 
+			JBoss WildFly -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+</project>

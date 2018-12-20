@@ -1,29 +1,25 @@
 package pl.softfly.opif.samples.invoice.jbpm.ejb;
 
-
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 
-@Named
 @ApplicationScoped
 public class EnvironmentProducer {
 	
     @Produces
     @Default
-    //@Singleton
-    public RuntimeEnvironment produceEnvironment() {
-
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
-                .newDefaultBuilder()
-                .get();
+    public RuntimeManager produceRuntimeManager() {
+    	System.out.println("build env");
+    	RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder();
         
-        return environment;
+		return RuntimeManagerFactory.Factory.get()
+				.newSingletonRuntimeManager(builder.get(), "pl.softfly.opif.samples.invoice.jbpm:ejb:1.0");
     }
 
 }

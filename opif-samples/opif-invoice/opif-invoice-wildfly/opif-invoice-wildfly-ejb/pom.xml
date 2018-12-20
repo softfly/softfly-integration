@@ -28,7 +28,7 @@
     <artifactId>opif-invoice-wildfly-ejb</artifactId>
     <packaging>ejb</packaging>
 
-    <name>opif-invoice-wildfly: EJB Module</name>
+    <name>opif-invoice-wildflys: EJB Module</name>
 
     <url>http://wildfly.org</url>
     <licenses>
