@@ -18,6 +18,8 @@
         <module>opif-invoice-wildfly-jbpm-kjar</module>
         <module>opif-invoice-wildfly-jbpm-model</module>
         <module>opif-invoice-wildfly-jbpm-service</module>
+        <module>opif-invoice-wildfly-jbpm-ejb</module>
+	<module>opif-invoice-wildfly-jbpm-test</module>
     </modules>
 
 </project>

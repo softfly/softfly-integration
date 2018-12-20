@@ -1,0 +1,38 @@
+[
+	[
+		"name": "TransformStringToDocument",
+		"displayName": "Transform String To Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "DocumentRecognize",
+		"displayName": "Recognize Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "DocumentValidationScheme",
+		"displayName": "Validate Scheme Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "DocumentBusinessValidation",
+		"displayName": "Validate Business Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "DocumentParser",
+		"displayName": "Parse Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "DocumentSend",
+		"displayName": "Send Document",
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	]
+]

@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.4.3.Final-v20180418-1358-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="ItemDefinition_119" isCollection="false" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_455" isCollection="false" structureRef="pl.softfly.oipf.entity.DocumentHeader"/>
+  <bpmn2:itemDefinition id="ItemDefinition_197" isCollection="false" structureRef="java.lang.Short"/>
+  <bpmn2:itemDefinition id="ItemDefinition_215" isCollection="false" structureRef="java.lang.Object"/>
+  <bpmn2:itemDefinition id="ItemDefinition_228" isCollection="false" structureRef="java.lang.Long"/>
+  <bpmn2:itemDefinition id="ItemDefinition_73" isCollection="false" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="ItemDefinition_258" isCollection="false" structureRef="pl.softfly.oipf.entity.Participant"/>
+  <bpmn2:itemDefinition id="ItemDefinition_458" isCollection="false" structureRef="pl.softfly.oipf.entity.Endpoint"/>
+  <bpmn2:process id="pl.softfly.opif.samples.invoice.process.jbpm.MainFlow" tns:packageName="pl.softfly.opif.samples.invoice.process.jbpm" name="MainFlow" isExecutable="true" processType="Private">
+    <bpmn2:extensionElements>
+      <tns:import name="pl.softfly.oipf.entity.DocumentHeader"/>
+      <tns:import name="java.util.List"/>
+      <tns:import name="pl.softfly.oipf.entity.Participant"/>
+      <tns:import name="pl.softfly.oipf.entity.Endpoint"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="Parameter" itemSubjectRef="ItemDefinition_119" name="Parameter"/>
+    <bpmn2:property id="Result" itemSubjectRef="ItemDefinition_455" name="Result"/>
+    <bpmn2:property id="recipients" itemSubjectRef="ItemDefinition_73" name="recipients"/>
+    <bpmn2:property id="endpoints" itemSubjectRef="ItemDefinition_73" name="endpoints"/>
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event 1">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Start Event 1]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="EndEvent_1" name="End Event 1">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[End Event 1]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_17</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:task id="Task_1" tns:taskName="TransformStringToDocument" tns:displayName="Transform String To Document" tns:icon="icon-info.gif" name="Transform String To Document">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Transform String To Document]]></tns:metaValue>
+        </tns:metaData>
+        <tns:onEntry-script/>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_4">
+        <bpmn2:dataInput id="DataInput_2" itemSubjectRef="ItemDefinition_119" name="input1"/>
+        <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_455" name="output1"/>
+        <bpmn2:inputSet id="InputSet_4" name="Input Set 4">
+          <bpmn2:dataInputRefs>DataInput_2</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_4" name="Output Set 4">
+          <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn2:sourceRef>Parameter</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_2</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
+        <bpmn2:targetRef>Result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="StartEvent_1" targetRef="Task_1"/>
+    <bpmn2:task id="Task_2" tns:taskName="DocumentRecognize" tns:displayName="Document Recognize" tns:icon="icon-info.gif" name="Document Recognize">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Document Recognize]]></tns:metaValue>
+        </tns:metaData>
+        <tns:onEntry-script scriptFormat="http://www.mvel.org/2.0">
+          <tns:script></tns:script>
+        </tns:onEntry-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_2">
+        <bpmn2:dataInput id="DataInput_1" itemSubjectRef="ItemDefinition_455" name="input1"/>
+        <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="ItemDefinition_455" name="output1"/>
+        <bpmn2:inputSet id="InputSet_2" name="Input Set 2">
+          <bpmn2:dataInputRefs>DataInput_1</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_2" name="Output Set 2">
+          <bpmn2:dataOutputRefs>DataOutput_2</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>Result</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_1</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+        <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
+        <bpmn2:targetRef>Result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="Task_1" targetRef="Task_2"/>
+    <bpmn2:task id="Task_3" tns:taskName="DocumentValidationScheme" tns:displayName="Validate Scheme Document" tns:icon="icon-info.gif" name="Validate Scheme Document">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Validate Scheme Document]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3">
+        <bpmn2:dataInput id="DataInput_3" itemSubjectRef="ItemDefinition_455" name="input1"/>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="ItemDefinition_455" name="output1"/>
+        <bpmn2:inputSet id="InputSet_3" name="Input Set 3">
+          <bpmn2:dataInputRefs>DataInput_3</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_3" name="Output Set 3">
+          <bpmn2:dataOutputRefs>DataOutput_3</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3">
+        <bpmn2:sourceRef>Result</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_3</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
+        <bpmn2:targetRef>Result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="Task_2" targetRef="Task_3"/>
+    <bpmn2:task id="Task_4" tns:taskName="DocumentBusinessValidation" tns:displayName="Validate Business Document" tns:icon="icon-info.gif" name="Validate Business Document">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Validate Business Document]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_5">
+        <bpmn2:dataInput id="DataInput_4" itemSubjectRef="ItemDefinition_455" name="input1"/>
+        <bpmn2:dataOutput id="DataOutput_4" itemSubjectRef="ItemDefinition_455" name="output1"/>
+        <bpmn2:inputSet id="InputSet_5" name="Input Set 5">
+          <bpmn2:dataInputRefs>DataInput_4</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_5" name="Output Set 5">
+          <bpmn2:dataOutputRefs>DataOutput_4</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4">
+        <bpmn2:sourceRef>Result</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_4</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_4">
+        <bpmn2:sourceRef>DataOutput_4</bpmn2:sourceRef>
+        <bpmn2:targetRef>Result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" sourceRef="Task_3" targetRef="Task_4"/>
+    <bpmn2:task id="Task_5" tns:taskName="DocumentParser" tns:displayName="Parse Document" tns:icon="icon-info.gif" name="Parse Document">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Parse Document]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_6">
+        <bpmn2:dataInput id="DataInput_5" itemSubjectRef="ItemDefinition_455" name="input1"/>
+        <bpmn2:dataOutput id="DataOutput_5" itemSubjectRef="ItemDefinition_455" name="output1"/>
+        <bpmn2:inputSet id="InputSet_6" name="Input Set 6">
+          <bpmn2:dataInputRefs>DataInput_5</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_6" name="Output Set 6">
+          <bpmn2:dataOutputRefs>DataOutput_5</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn2:sourceRef>Result</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_5</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_5">
+        <bpmn2:sourceRef>DataOutput_5</bpmn2:sourceRef>
+        <bpmn2:targetRef>Result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="Task_4" targetRef="Task_5"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_13" tns:priority="1" sourceRef="Task_5" targetRef="ScriptTask_4"/>
+    <bpmn2:scriptTask id="ScriptTask_4" name="Dermine recipients of document" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Dermine recipients of document]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_13</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_16</bpmn2:outgoing>
+      <bpmn2:script>pl.softfly.oipf.entity.DocumentHeader header = (pl.softfly.oipf.entity.DocumentHeader) kcontext.getVariable(&quot;Result&quot;);
+kcontext.setVariable(&quot;recipients&quot;, header.getRecipients());</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Sub Process 1]]></tns:metaValue>
+        </tns:metaData>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java"/>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_16</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_17</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_12">
+        <bpmn2:dataInput id="DataInput_11" itemSubjectRef="ItemDefinition_73" isCollection="true" name="recipients"/>
+        <bpmn2:inputSet id="InputSet_12" name="Input Set 12">
+          <bpmn2:dataInputRefs>DataInput_11</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:property id="recipient" itemSubjectRef="ItemDefinition_258" name="recipient"/>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_11">
+        <bpmn2:sourceRef>recipients</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_11</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:multiInstanceLoopCharacteristics id="MultiInstanceLoopCharacteristics_3">
+        <bpmn2:loopDataInputRef>DataInput_11</bpmn2:loopDataInputRef>
+        <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="recipient2" itemSubjectRef="ItemDefinition_258" name="recipient2"/>
+      </bpmn2:multiInstanceLoopCharacteristics>
+      <bpmn2:startEvent id="StartEvent_2" name="Start Event 2">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[Start Event 2]]></tns:metaValue>
+          </tns:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="EndEvent_2" name="End Event 2">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[End Event 2]]></tns:metaValue>
+          </tns:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:task id="Task_7" tns:taskName="DocumentSend" tns:displayName="Send Document" tns:icon="icon-info.gif" name="Send Document">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[Send Document]]></tns:metaValue>
+          </tns:metaData>
+          <tns:onEntry-script scriptFormat="http://www.java.com/java">
+            <tns:script>System.out.println(kcontext.getVariable(&quot;recipient2&quot;));
+kcontext.setVariable(&quot;recipient&quot;, kcontext.getVariable(&quot;recipient2&quot;));</tns:script>
+          </tns:onEntry-script>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="InputOutputSpecification_11">
+          <bpmn2:dataInput id="DataInput_7" itemSubjectRef="ItemDefinition_455" name="documentHeader"/>
+          <bpmn2:dataInput id="DataInput_14" itemSubjectRef="ItemDefinition_258" name="recipient"/>
+          <bpmn2:inputSet id="InputSet_11" name="Input Set 11">
+            <bpmn2:dataInputRefs>DataInput_7</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>DataInput_14</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_11" name="Output Set 11"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_7">
+          <bpmn2:sourceRef>Result</bpmn2:sourceRef>
+          <bpmn2:targetRef>DataInput_7</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_13">
+          <bpmn2:sourceRef>recipient</bpmn2:sourceRef>
+          <bpmn2:targetRef>DataInput_14</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="StartEvent_2" targetRef="Task_7"/>
+      <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" sourceRef="Task_7" targetRef="EndEvent_2"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_16" tns:priority="1" sourceRef="ScriptTask_4" targetRef="SubProcess_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_17" tns:priority="1" sourceRef="SubProcess_1" targetRef="EndEvent_1"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="pl.softfly.opif.samples.invoice.process.jbpm.MainFlow">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="131.0" width="336.0" x="594.0" y="130.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <dc:Bounds height="14.0" width="79.0" x="600.0" y="133.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="27.0" y="27.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="69.0" x="11.0" y="63.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="485.0" y="178.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="66.0" x="470.0" y="214.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="Task_1" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="120.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3">
+          <dc:Bounds height="28.0" width="99.0" x="125.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_2" bpmnElement="Task_2" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="251.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
+          <dc:Bounds height="28.0" width="62.0" x="275.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_3" bpmnElement="Task_3" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="390.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5">
+          <dc:Bounds height="28.0" width="101.0" x="394.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_4" bpmnElement="Task_4" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="520.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6">
+          <dc:Bounds height="28.0" width="106.0" x="522.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_5" bpmnElement="Task_5" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="670.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7">
+          <dc:Bounds height="14.0" width="91.0" x="679.0" y="38.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_4" bpmnElement="ScriptTask_4" isExpanded="true">
+        <dc:Bounds height="50.0" width="120.0" x="810.0" y="20.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8">
+          <dc:Bounds height="28.0" width="111.0" x="814.0" y="31.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="860.0" y="173.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="69.0" x="844.0" y="209.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="639.0" y="173.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="66.0" x="624.0" y="209.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_7" bpmnElement="Task_7" isExpanded="true">
+        <dc:Bounds height="50.0" width="110.0" x="714.0" y="166.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11">
+          <dc:Bounds height="14.0" width="88.0" x="725.0" y="184.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_Task_1">
+        <di:waypoint xsi:type="dc:Point" x="63.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="91.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_Task_1" targetElement="BPMNShape_Task_2">
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="240.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="251.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_Task_2" targetElement="BPMNShape_Task_3">
+        <di:waypoint xsi:type="dc:Point" x="361.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_Task_3" targetElement="BPMNShape_Task_4">
+        <di:waypoint xsi:type="dc:Point" x="500.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="510.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="520.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_Task_4" targetElement="BPMNShape_Task_5">
+        <di:waypoint xsi:type="dc:Point" x="630.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="650.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="670.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_13" sourceElement="BPMNShape_Task_5" targetElement="BPMNShape_ScriptTask_4">
+        <di:waypoint xsi:type="dc:Point" x="780.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="795.0" y="45.0"/>
+        <di:waypoint xsi:type="dc:Point" x="810.0" y="45.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_14"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_16" bpmnElement="SequenceFlow_16" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="870.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="870.0" y="100.0"/>
+        <di:waypoint xsi:type="dc:Point" x="762.0" y="100.0"/>
+        <di:waypoint xsi:type="dc:Point" x="762.0" y="130.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_15"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_17" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="594.0" y="195.0"/>
+        <di:waypoint xsi:type="dc:Point" x="558.0" y="195.0"/>
+        <di:waypoint xsi:type="dc:Point" x="521.0" y="196.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_16"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_Task_7">
+        <di:waypoint xsi:type="dc:Point" x="860.0" y="191.0"/>
+        <di:waypoint xsi:type="dc:Point" x="842.0" y="191.0"/>
+        <di:waypoint xsi:type="dc:Point" x="824.0" y="191.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_12"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_Task_7" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="714.0" y="191.0"/>
+        <di:waypoint xsi:type="dc:Point" x="695.0" y="191.0"/>
+        <di:waypoint xsi:type="dc:Point" x="675.0" y="191.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_13"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="BPMNLabelStyle_1">
+      <dc:Font name="arial" size="9.0"/>
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

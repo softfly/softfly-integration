@@ -7,31 +7,37 @@
 
         <session>
             <ejb-name>DocumentRecognize</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.document.recognize.DocumentRecognizeBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>
         <session>
             <ejb-name>DocumentValidationScheme</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.document.validation.scheme.DocumentValidationSchemeBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>
         <session>
             <ejb-name>DocumentBusinessValidation</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.document.validation.business.DocumentBusinessValidationBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>
         <session>
             <ejb-name>DocumentParser</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.document.parser.DocumentParserBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>
         <session>
             <ejb-name>DocumentTransformation</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.document.transformation.DocumentTransformationBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>
         <session>
             <ejb-name>Endpoint</ejb-name>
+            <local-bean/>
             <ejb-class>pl.softfly.oipf.endpoint.EndpointBean</ejb-class>
             <session-type>Stateless</session-type>
         </session>

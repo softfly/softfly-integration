@@ -52,6 +52,12 @@
             <artifactId>opif-invoice-wildfly-ejb</artifactId>
             <type>ejb</type>
         </dependency>
+        <dependency>
+            <groupId>pl.softfly.opif.samples.invoice</groupId>
+            <artifactId>opif-invoice-wildfly-jbpm-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
     </dependencies>
 
     <build>
