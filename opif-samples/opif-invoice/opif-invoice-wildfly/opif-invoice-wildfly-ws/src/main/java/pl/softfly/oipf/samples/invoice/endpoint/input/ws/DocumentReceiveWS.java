@@ -1,7 +1,7 @@
 package pl.softfly.oipf.samples.invoice.endpoint.input.ws;
 
 import pl.softfly.oipf.entity.DocumentHeader;
-import pl.softfly.oipf.samples.invoice.processes.ejb.MainFlowEJB;
+import pl.softfly.oipf.samples.invoice.flows.java.ejb.JavaMainFlowBean;
 import pl.softfly.oipf.utils.LoggerUtil;
 
 import javax.jws.WebMethod;
@@ -9,7 +9,7 @@ import javax.jws.WebService;
 import java.util.logging.Logger;
 
 @WebService
-public class DocumentReceiveWS extends MainFlowEJB implements DocumentReceive {
+public class DocumentReceiveWS extends JavaMainFlowBean implements DocumentReceive {
 
     private final static Logger LOGGER = Logger.getLogger(DocumentReceiveWS.class.getName());
 

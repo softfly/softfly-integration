@@ -28,7 +28,7 @@
     <artifactId>opif-invoice-wildfly-ws</artifactId>
     <packaging>war</packaging>
 
-    <name>opif-invoice-wildfly: WS Module</name>
+    <name>opif-invoice-wildfly-ws</name>
 
     <url>http://wildfly.org</url>
     <licenses>
@@ -44,9 +44,15 @@
         <!-- Dependency on the EJB module so we can use it's services if needed -->
         <dependency>
             <groupId>pl.softfly.opif.samples.invoice</groupId>
-            <artifactId>opif-invoice-wildfly-ejb</artifactId>
+            <artifactId>oipf-invoice-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>pl.softfly.opif.samples.invoice</groupId>
+            <artifactId>opif-invoice-wildfly-flows-java</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <type>ejb</type>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss WildFly -->

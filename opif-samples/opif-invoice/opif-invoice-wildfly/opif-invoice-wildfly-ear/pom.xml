@@ -28,7 +28,7 @@
     <artifactId>opif-invoice-wildfly-ear</artifactId>
     <packaging>ear</packaging>
 
-    <name>opif-invoice-wildfly: EAR Module</name>
+    <name>opif-invoice-wildfly-ear</name>
 
     <url>http://wildfly.org</url>
     <licenses>
@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>pl.softfly.opif.samples.invoice</groupId>
-            <artifactId>opif-invoice-wildfly-jbpm-ejb</artifactId>
+            <artifactId>opif-invoice-wildfly-flows-jbpm-cdi</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
