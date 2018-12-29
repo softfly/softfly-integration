@@ -13,7 +13,7 @@
 	<work-item-handlers> 
 		<work-item-handler>
 			<resolver>mvel</resolver>
-			<identifier>new pl.softfly.opif.samples.invoice.jbpm.workitemhandler.TransformStringToDocumentWorkItemHandler()</identifier>
+			<identifier>new pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.TransformStringToDocumentWorkItemHandler()</identifier>
 			<parameters />
 			<name>TransformStringToDocument</name>
 		</work-item-handler>
