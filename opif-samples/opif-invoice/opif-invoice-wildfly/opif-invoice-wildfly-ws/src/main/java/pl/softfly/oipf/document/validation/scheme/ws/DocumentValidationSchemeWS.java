@@ -1,6 +1,6 @@
 package pl.softfly.oipf.document.validation.scheme.ws;
 
-import pl.softfly.oipf.document.validation.scheme.DocumentValidationSchemeBean;
+import pl.softfly.oipf.document.validation.schema.DocumentValidationSchemeBean;
 import pl.softfly.oipf.entity.DocumentBody;
 
 import javax.jws.WebMethod;

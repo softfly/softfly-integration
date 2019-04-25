@@ -5,7 +5,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.springframework.stereotype.Component;
 import pl.softfly.oipf.entity.DocumentHeader;
-import pl.softfly.opif.document.create.TransformStringToDocumentBean;
+import pl.softfly.opif.document.repo.TransformStringToDocumentBean;
 
 import java.util.HashMap;
 

@@ -37,9 +37,10 @@
 
     <dependencies>
 
-		<dependency>
-			<groupId>pl.softfly.opif</groupId>
-			<artifactId>oipf-core</artifactId>
+		<dependency>	        
+        	<groupId>pl.softfly.opif.samples.invoice</groupId>
+        	<artifactId>opif-invoice-wildfly-ejb</artifactId>
+        	<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

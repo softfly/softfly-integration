@@ -4,6 +4,6 @@ import pl.softfly.oipf.entity.DocumentHeader;
 
 public interface MainFlow {
 
-    DocumentHeader start(String inputDocument);
+	JavaMainFlowResponse start(String inputDocument);
 
 }

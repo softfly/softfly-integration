@@ -15,7 +15,6 @@ import pl.softfly.opif.samples.invoice.flows.jbpm.cdi.KjarDeployment;
 @LocalBean
 public class JbpmMainFlowBean {
 	
-	
 	@Inject
 	ProcessService processService;
 

@@ -8,6 +8,4 @@ public interface DocumentRecognize {
 
     DictDocumentFormat recognize(DocumentBody documentBody);
 
-    DocumentHeader enrichRecognize(DocumentHeader documentHeader);
-
 }

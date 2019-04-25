@@ -1,37 +1,104 @@
 [
 	[
-		"name": "TransformStringToDocument",
-		"displayName": "Transform String To Document",
+		"name": "CreateDocumentHeader",
+		"displayName": "Create DocumentHeader from string",
+		"parameters" : [
+	        "Input" : new StringDataType()
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	],
 	[
-		"name": "DocumentRecognize",
+		"name": "RecognizeDocument",
 		"displayName": "Recognize Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader"),
+	        "Return" : new BooleanDataType()
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	],
 	[
-		"name": "DocumentValidationScheme",
-		"displayName": "Validate Scheme Document",
+		"name": "ValidateSchemaDocument",
+		"displayName": "Validate Schema Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader"),
+	        "ErrorList" : new ListDataType(),
+	        "Return" : new BooleanDataType()
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	],
 	[
-		"name": "DocumentBusinessValidation",
+		"name": "ValidateBusinessDocument",
 		"displayName": "Validate Business Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader"),
+	        "ErrorList" : new ListDataType(),
+	        "Return" : new BooleanDataType()
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	],
 	[
-		"name": "DocumentParser",
+		"name": "ParseDocument",
 		"displayName": "Parse Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	],
 	[
-		"name": "DocumentSend",
+		"name": "FindSupportedDocumentFormats",
+		"displayName": "Find Supported Document Formats",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader"),
+	        "ParticipantInput" : new ObjectDataType("pl.softfly.oipf.entity.Participant")
+	    ],
+	    "results" : [
+	        "ParticipantSupportedDocumentFormatListResult" : new ObjectDataType("java.util.List")
+	    ],
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": TransformDocument",
+		"displayName": "Transform Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader"),
+	        "DocumentFormatListInput" : new ObjectDataType("java.util.List"),
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+		"icon": "defaultservicenodeicon.png",
+		"category": "OPIF Tasks"
+	],
+	[
+		"name": "SendDocument",
 		"displayName": "Send Document",
+		"parameters" : [
+	        "DocumentHeaderInput" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
+	    "results" : [
+	        "DocumentHeaderResult" : new ObjectDataType("pl.softfly.oipf.entity.DocumentHeader")
+	    ],
 		"icon": "defaultservicenodeicon.png",
 		"category": "OPIF Tasks"
 	]

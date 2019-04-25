@@ -1,5 +1,6 @@
 package pl.softfly.oipf.document.parser;
 
+import pl.softfly.oipf.entity.DictDocumentFormat;
 import pl.softfly.oipf.entity.DocumentBody;
 import pl.softfly.oipf.entity.DocumentHeader;
 import pl.softfly.oipf.entity.Endpoint;
@@ -7,6 +8,7 @@ import pl.softfly.oipf.entity.Participant;
 import pl.softfly.oipf.utils.LoggerUtil;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class DocumentParserBean implements DocumentParser {
@@ -15,32 +17,48 @@ public class DocumentParserBean implements DocumentParser {
 
     @Override
     public DocumentBody parse(DocumentBody documentBody) {
-        LoggerUtil.start(LOGGER);
+    	LOGGER.info(LoggerUtil.start());
+        Objects.requireNonNull(documentBody);
 
-        DocumentHeader header = new DocumentHeader();
-        Participant p1 = new Participant();
-        p1.setEndpoints(Arrays.asList(new Endpoint()));
-        Participant p2 = new Participant();
-        p2.setEndpoints(Arrays.asList(new Endpoint()));
-        header.setRecipients(Arrays.asList(p1, p2));
-        documentBody.setDocumentHeader(header);
+        documentBody.setDocumentHeader(newDocumentHeader());
 
-        LoggerUtil.end(LOGGER);
+        LOGGER.info(LoggerUtil.end());
         return documentBody;
     }
 
     @Override
     public DocumentHeader parse(DocumentHeader documentHeader) {
-        LoggerUtil.start(LOGGER);
+    	LOGGER.info(LoggerUtil.start());
+        Objects.requireNonNull(documentHeader);
+        
+        documentHeader.setRecipients(Arrays.asList(newParticipant(), newParticipant()));
 
-        Participant p1 = new Participant();
-        p1.setEndpoints(Arrays.asList(new Endpoint()));
-        Participant p2 = new Participant();
-        p2.setEndpoints(Arrays.asList(new Endpoint()));
-        documentHeader.setRecipients(Arrays.asList(p1, p2));
-
-        LoggerUtil.end(LOGGER);
+        LOGGER.info(LoggerUtil.end());
         return documentHeader;
     }
+    
+    private DocumentHeader newDocumentHeader() {
+        DocumentHeader header = new DocumentHeader();
+        header.setRecipients(Arrays.asList(newParticipant(), newParticipant()));
+        return header;
+    }
+    
+    private Participant newParticipant() {
+        Participant p = new Participant();
+        p.setEndpoints(Arrays.asList(newEndpoint()));
+        return p;
+    }
+    
+    private Endpoint newEndpoint() {
+        Endpoint e = new Endpoint();
+        e.setDictDocumentFormat(newDictDocumentFormat());
+        return e;
+    }
+    
+    private DictDocumentFormat newDictDocumentFormat() {
+        DictDocumentFormat documentFormat = new DictDocumentFormat();
+        documentFormat.setName("G2_INVOICE_3.0");
+        return documentFormat;
+    } 
 
 }

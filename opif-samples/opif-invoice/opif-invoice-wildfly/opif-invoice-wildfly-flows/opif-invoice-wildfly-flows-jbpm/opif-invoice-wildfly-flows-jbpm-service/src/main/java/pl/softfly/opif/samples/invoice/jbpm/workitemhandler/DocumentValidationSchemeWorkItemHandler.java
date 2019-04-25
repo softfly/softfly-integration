@@ -4,7 +4,8 @@ import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.springframework.stereotype.Component;
-import pl.softfly.oipf.document.validation.scheme.DocumentValidationSchemeBean;
+
+import pl.softfly.oipf.document.validation.schema.DocumentValidationSchemeBean;
 import pl.softfly.oipf.entity.DocumentHeader;
 
 import java.util.HashMap;

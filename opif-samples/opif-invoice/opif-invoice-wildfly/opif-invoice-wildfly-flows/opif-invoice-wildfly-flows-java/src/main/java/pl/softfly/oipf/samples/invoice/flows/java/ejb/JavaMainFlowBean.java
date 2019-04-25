@@ -1,19 +1,27 @@
 package pl.softfly.oipf.samples.invoice.flows.java.ejb;
 
-import pl.softfly.oipf.document.parser.DocumentParserBean;
-import pl.softfly.oipf.document.recognize.DocumentRecognizeBean;
-import pl.softfly.oipf.document.transformation.DocumentTransformationBean;
-import pl.softfly.oipf.document.validation.business.DocumentBusinessValidationBean;
-import pl.softfly.oipf.document.validation.scheme.DocumentValidationSchemeBean;
-import pl.softfly.oipf.endpoint.EndpointBean;
+import pl.softfly.oipf.document.parser.DocumentParser;
+import pl.softfly.oipf.document.recognize.DocumentRecognize;
+import pl.softfly.oipf.document.recognize.DocumentRecognizeLocalBean;
+import pl.softfly.oipf.document.transformation.DocumentTransformation;
+import pl.softfly.oipf.document.validation.business.DocumentValidationBusiness;
+import pl.softfly.oipf.document.validation.schema.DocumentValidationSchema;
+import pl.softfly.oipf.endpoint.DetermineEndpointsBean;
+import pl.softfly.oipf.endpoint.entity.DocumentShipmentItem;
+import pl.softfly.oipf.endpoint.entity.DocumentShipmentItemStatus;
+import pl.softfly.oipf.entity.DictDocumentFormat;
 import pl.softfly.oipf.entity.DocumentBody;
 import pl.softfly.oipf.entity.DocumentHeader;
 import pl.softfly.oipf.entity.Endpoint;
 import pl.softfly.oipf.entity.Participant;
+import pl.softfly.opif.document.repo.DocumentRepository;
+import pl.softfly.samples.invoice.entity.InvoiceDocumentStatus;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+
+
 import java.util.List;
 
 /**
@@ -23,79 +31,173 @@ import java.util.List;
 @LocalBean
 public class JavaMainFlowBean implements MainFlow {
 
-    @EJB
-    DocumentRecognizeBean documentRecognize;
+	@EJB
+	protected DocumentRepository documentRepository;
 
-    @EJB
-    DocumentValidationSchemeBean documentValidationScheme;
+	@EJB
+	protected DocumentRecognize documentRecognize;
 
-    @EJB
-    DocumentBusinessValidationBean documentBusinessValidation;
+	@EJB
+	protected DocumentValidationSchema documentValidationSchema;
 
-    @EJB
-    DocumentParserBean documentParser;
+	@EJB
+	protected DocumentValidationBusiness documentValidationBusiness;
 
-    @EJB
-    DocumentTransformationBean documentTransformation;
+	@EJB
+	protected DocumentParser documentParser;
 
-    @EJB
-    EndpointBean endpointBean;
+	@EJB
+	protected DocumentTransformation documentTransformation;
 
-    /**
-     * Default constructor.
-     */
-    public JavaMainFlowBean() {
-        // TODO Auto-generated constructor stub
-    }
+	@EJB
+	protected DetermineEndpointsBean determineEndpoints;
 
-    @Override
-    public DocumentHeader start(String inputDocument) {
-        DocumentBody documentBody = new DocumentBody();
-        documentBody.setBody(inputDocument);
-        receive(documentBody);
-        return documentBody.getDocumentHeader();
-    }
+	@EJB
+	protected pl.softfly.oipf.endpoint.Endpoint endpoint;
 
-    protected boolean receive(DocumentBody documentBody) {
-        // 1. Rozpoznaj format dokumentu.
-        documentBody.setDocumentFormat(documentRecognize.recognize(documentBody));
-        // 2. Walidacja synaktyczną dokumentu.
-        List<?> validationsScheme = documentValidationScheme.valid(documentBody);
-        if (validationsScheme == null || validationsScheme.isEmpty()) {
-            // 3. Walidacja biznesowa dokumentu.
-            List<?> businessValidations = documentBusinessValidation.valid(documentBody);
-            if (businessValidations == null || businessValidations.isEmpty()) {
-                // Uzupełnij encje o informacje o dokumencie.
-                documentParser.parse(documentBody);
-                return process(documentBody);
-            }
-        }
-        return false;
-    }
+	@Override
+	public JavaMainFlowResponse start(String inputDocument) {
+		JavaMainFlowResponse response = new JavaMainFlowResponse();
 
-    protected boolean process(DocumentBody documentBody) {
-        // 4. Dermine recipients of document.
-        List<Participant> recipients = documentBody.getDocumentHeader().getRecipients();
-        PARTICIPANT:
-        for (Participant recipient : recipients) {
-            send(documentBody, recipient);
-        }
-        return true;
-    }
+		DocumentHeader documentHeader = createDocumentHeader(inputDocument);
 
-    protected boolean send(DocumentBody documentBody, Participant recipient) {
-        // 5. Determine the endpoint of recipient to deliver the document.
-        for (Endpoint endpoint : recipient.getEndpoints()) {
-            // Znajdź endpoint, dla którego można utworzyć dokument w odpowiednim formacie
-            DocumentBody afterTransformDocumentBody = documentTransformation.transform(documentBody,
-                    endpoint.getDictDocumentFormat());
-            // 8. Wyślij dokument do odbiorcy.
-            if (endpointBean.send(afterTransformDocumentBody, endpoint)) {
-                // 9. Powtórz krok 5,6 dla kolejnych odbiorców.
-                return true;
-            }
-        }
-        return false;
-    }
+		// 1. Rozpoznaj format dokumentu.
+		if (!recognizeDocument(documentHeader)) {
+			response.setResult(documentHeader.getStatus().toString());
+			return response;
+		}
+
+		// 2. Walidacja synaktyczną dokumentu.
+		List<?> errors = validateDocumentSchema(documentHeader);
+		if (errors != null && !errors.isEmpty()) {
+			response.setResult(documentHeader.getStatus().toString());
+			response.setErrors(errors);
+			return response;
+		}
+
+		// 3. Walidacja biznesowa dokumentu.
+		errors = validateDocumentBusiness(documentHeader);
+		if (errors != null && !errors.isEmpty()) {
+			response.setResult(documentHeader.getStatus().toString());
+			response.setErrors(errors);
+			return response;
+		}
+
+		// Uzupełnij encje o informacje o dokumencie.
+		parseDocument(documentHeader);
+
+		// 4. Dermine recipients of document.
+		RECIPIENT: for (Participant recipient : documentHeader.getRecipients()) {
+
+			// 7. Determine endpoints to sent.
+			List<DocumentShipmentItem> shipmentList = determineEndpoints.determineShipment(documentHeader, recipient);
+			for (DocumentShipmentItem shipmentItem: shipmentList) {
+				DocumentBody documentBody = shipmentItem.getDocumentBody();
+				Endpoint endpoint = shipmentItem.getEndpoint();
+
+				// 8. Transform
+				DocumentBody newBody = transformDocument(documentBody, endpoint.getDictDocumentFormat());
+				if (newBody != null) {
+					shipmentItem.setDocumentBody(documentBody);
+				}
+
+				// 9. Send
+				if (sendDocument(shipmentItem)) {
+					break RECIPIENT;
+				}
+			}
+		}
+
+		response.setResult(documentHeader.getStatus().toString());
+
+		return response;
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.CreateDocumentHeaderWorkItemHandler
+	 */
+	protected DocumentHeader createDocumentHeader(String inputDocument) {
+		DocumentHeader header = documentRepository.createDocumentHeader(inputDocument);
+		header.setStatus(InvoiceDocumentStatus.LOADED);
+		return header;
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.RecognizeDocumentWorkItemHandler
+	 */
+	protected boolean recognizeDocument(DocumentHeader header) {
+		boolean isRecognize = DocumentRecognizeLocalBean.enrichRecognize(documentRecognize, header);
+		header.setStatus(isRecognize ? InvoiceDocumentStatus.RECOGNIZED : InvoiceDocumentStatus.NOT_RECOGNIZED);
+		return isRecognize;
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.ValidateSchemaDocumentWorkItemHandler
+	 */
+	protected List<?> validateDocumentSchema(DocumentHeader header) {
+		List<?> list = documentValidationSchema.validate(header);
+		boolean isValid = list == null || list.isEmpty();
+		header.setStatus(isValid ? InvoiceDocumentStatus.SCHEME_VALIDATED : InvoiceDocumentStatus.NOT_SCHEME_VALIDATED);
+		return list;
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.ValidateBusinessDocumentWorkItemHandler
+	 */
+	protected List<?> validateDocumentBusiness(DocumentHeader documentHeader) {
+		List<?> list = documentValidationBusiness.validate(documentHeader);
+		boolean isValid = list == null || list.isEmpty();
+		documentHeader.setStatus(
+				isValid ? InvoiceDocumentStatus.BUSINESS_VALIDATED : InvoiceDocumentStatus.NOT_BUSINESS_VALIDATED);
+		return list;
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.ParseDocumentWorkItemHandler
+	 */
+	protected void parseDocument(DocumentHeader documentHeader) {
+		documentParser.parse(documentHeader);
+		documentHeader.setStatus(InvoiceDocumentStatus.PARSED);
+	}
+
+	/**
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.FindSupportedDocumentFormats
+	 */
+	/*
+	protected List<DictDocumentFormat> findSupportedDocumentFormat(DocumentHeader documentHeader,
+			Participant recipient) {
+		return endpoint.findSupportedDocumentFormat(documentHeader, recipient);
+	}*/
+
+	/**
+	 * TODO fix bpmn
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.TransformDocumentWorkItemHandler
+	 */
+	protected DocumentBody transformDocument(DocumentBody documentBody, DictDocumentFormat targetDocumentFormat) {
+		if (!documentBody.getDocumentFormat().equals(targetDocumentFormat)) {
+			DocumentBody newBody = documentTransformation.transform(documentBody, targetDocumentFormat);
+			documentBody.getDocumentHeader().getBodies().add(newBody);
+			return documentBody;
+		}
+		return null;
+	}
+
+	/**
+	 * TODO fix bpmn
+	 * @see pl.softfly.opif.samples.invoice.flows.jbpm.workitemhandler.SendDocumentWorkItemHandler
+	 */
+	protected boolean sendDocument(DocumentShipmentItem shipmentItem) {
+		DocumentBody documentBody = shipmentItem.getDocumentBody();
+		Endpoint endpoint2 = shipmentItem.getEndpoint();
+
+		if (endpoint.send(documentBody, endpoint2)) {
+			documentBody.getDocumentHeader().setStatus(InvoiceDocumentStatus.SUBMITTED);
+			shipmentItem.setStatus(DocumentShipmentItemStatus.SENT);
+			return true;
+		} else {
+			shipmentItem.setStatus(DocumentShipmentItemStatus.ERROR);
+			return false;
+		}
+	}
 
 }
