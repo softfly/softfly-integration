@@ -16,7 +16,7 @@
 	<name>opif-invoice</name>
 
     <modules>
-        <module>opif-invoice-wildfly</module>
+        <module>opif-invoice-java</module>
     </modules>    
 
 </project>

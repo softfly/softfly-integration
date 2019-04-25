@@ -10,11 +10,11 @@ public class LoggerUtil {
 
     }
 
-    public static void start(Logger logger) {
-        logger.info(StringUtils.center("START", 50, "="));
+    public static String start() {
+        return StringUtils.center("START", 50, "=");
     }
 
-    public static void end(Logger logger) {
-        logger.info(StringUtils.center("END", 50, "="));
+    public static String end() {
+        return StringUtils.center("END", 50, "=");
     }
 }
