@@ -61,6 +61,13 @@
     <!-- maven-compiler-plugin -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.login>${env.SONAR_TOKEN}</sonar.login>
+    <sonar.organization>softfly-github</sonar.organization>
+    <sonar.coverage.jacoco.xmlReportPaths>
+      ${maven.multiModuleProjectDirectory}/softfly-integ-jacoco/target/site/jacoco-aggregate/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <dependencyManagement>
