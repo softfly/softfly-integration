@@ -39,6 +39,13 @@
     <url>https://github.com/softfly/softfly-integration/issues</url>
   </issueManagement>
 
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:https://github.com/softfly/softfly-integration.git</url>
+    </site>
+  </distributionManagement>
+
   <properties>
     <!-- Explicitly declaring the source encoding eliminates the following
       message: -->
@@ -60,5 +67,69 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+
+    <profile>
+      <id>javadoc</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-site-plugin</artifactId>
+              <configuration>
+                <skipDeploy>true</skipDeploy>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>3.0.0</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.7.1</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-publish-plugin</artifactId>
+            <version>3.0.0</version>
+            <inherited>false</inherited>
+            <configuration>
+              <scmBranch>gh-pages</scmBranch>
+              <tryUpdate>true</tryUpdate>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.1.0</version>
+            <inherited>false</inherited>
+            <configuration>
+              <additionalparam>-Xdoclint:all -Xdoclint:-missing</additionalparam>
+              <additionalOptions>-Xdoclint:all -Xdoclint:-missing</additionalOptions>
+              <additionalJOptions>
+                <additionalJOption>-Xdoclint:all</additionalJOption>
+                <additionalJOption>-Xdoclint:-missing</additionalJOption>
+              </additionalJOptions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+
+  </profiles>
 
 </project>
