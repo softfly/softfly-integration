@@ -39,6 +39,11 @@
     <url>https://github.com/softfly/softfly-integration/issues</url>
   </issueManagement>
 
+  <ciManagement>
+    <system>Travis CI</system>
+    <url>https://travis-ci.com/softfly/softfly-integration</url>
+  </ciManagement>
+
   <distributionManagement>
     <site>
       <id>github</id>
