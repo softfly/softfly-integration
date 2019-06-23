@@ -76,6 +76,58 @@
   <profiles>
 
     <profile>
+      <id>jacoco</id>
+      <activation>
+        <property>
+          <name>!skipTests</name>
+        </property>
+      </activation>
+      <modules>
+        <module>softfly-integ-jacoco</module>
+      </modules>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.4</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>pre-unit-test</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>pre-integration-test</id>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.4</version>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+
+    <profile>
       <id>javadoc</id>
       <activation>
         <activeByDefault>true</activeByDefault>

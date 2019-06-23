@@ -4,6 +4,9 @@ cache:
   directories:
     - $HOME/.m2
 
+script:
+  - "mvn verify -Pjacoco"
+
 after_success:
   - "mvn -Pjavadoc site"
   - "mvn site:stage"
