@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SenderEndpointBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">softfly-integ-jacoco</a> &gt; <a href="../index.html" class="el_bundle">softfly-integ-core</a> &gt; <a href="index.source.html" class="el_package">pl.softfly.integ.endpoint</a> &gt; <span class="el_source">SenderEndpointBean.java</span></div><h1>SenderEndpointBean.java</h1><pre class="source lang-java linenums">package pl.softfly.integ.endpoint;
+
+import java.util.Objects;
+import java.util.logging.Logger;
+import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.repository.DocumentFormatRepositoryBean;
+import pl.softfly.integ.endpoint.entity.Endpoint;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoingStatus;
+
+
+/**
+ * Send the document via endpoint.
+ *
+ * @author Grzegorz Ziemski
+ */
+<span class="fc" id="L17">public class SenderEndpointBean implements SenderEndpoint {</span>
+
+<span class="fc" id="L19">  private static final Logger LOGGER = Logger.getLogger(SenderEndpointBean.class.getName());</span>
+
+<span class="fc" id="L21">  protected DocumentFormatRepositoryBean documentFormatRepository =</span>
+      new DocumentFormatRepositoryBean();
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean send(DocumentBody documentBody, Endpoint endpoint) {
+<span class="fc" id="L29">    Objects.requireNonNull(documentBody);</span>
+<span class="fc" id="L30">    Objects.requireNonNull(endpoint);</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">    if (endpoint.getDocumentFormat().equals(getDocumentFormatRepository().newInvoice3())) {</span>
+<span class="fc" id="L32">      LOGGER.info(&quot;Sent documentBody to endpoint&quot;);</span>
+<span class="fc" id="L33">      return true;</span>
+    } else {
+<span class="fc" id="L35">      LOGGER.info(&quot;Not sent documentBody to endpoint&quot;);</span>
+<span class="fc" id="L36">      return false;</span>
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean send(ShipmentOutgoing shipment) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    if (send(shipment.getDocumentBody(), shipment.getEndpoint())) {</span>
+<span class="fc" id="L46">      shipment.setStatus(ShipmentOutgoingStatus.COMITTED);</span>
+<span class="fc" id="L47">      return true;</span>
+    } else {
+<span class="fc" id="L49">      shipment.setStatus(ShipmentOutgoingStatus.ERROR);</span>
+<span class="fc" id="L50">      return false;</span>
+    }
+  }
+
+  public DocumentFormatRepositoryBean getDocumentFormatRepository() {
+<span class="fc" id="L55">    return documentFormatRepository;</span>
+  }
+
+  public void setDocumentFormatRepository(DocumentFormatRepositoryBean documentFormatRepository) {
+<span class="nc" id="L59">    this.documentFormatRepository = documentFormatRepository;</span>
+<span class="nc" id="L60">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>OutgoingShipmentBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">softfly-integ-jacoco</a> &gt; <a href="../index.html" class="el_bundle">softfly-integ-core</a> &gt; <a href="index.source.html" class="el_package">pl.softfly.integ.shipment.out</a> &gt; <span class="el_source">OutgoingShipmentBean.java</span></div><h1>OutgoingShipmentBean.java</h1><pre class="source lang-java linenums">package pl.softfly.integ.shipment.out;
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Logger;
+import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentHeader;
+import pl.softfly.integ.doc.repository.DocumentHeaderRepositoryBean;
+import pl.softfly.integ.endpoint.entity.Endpoint;
+import pl.softfly.integ.endpoint.repository.EndpointRepositoryBean;
+import pl.softfly.integ.entity.Participant;
+import pl.softfly.integ.shipment.entity.Shipment;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoingStatus;
+
+
+/**
+ * Determine the outgoing shipment (endpoints, recipient) to which the document should be sent.
+ *
+ * &lt;ol&gt;
+ * &lt;li&gt;Call {@link #isRequired}.
+ * &lt;li&gt;Call {@link #determine}.
+ * &lt;li&gt;Send shipments by {@link pl.softfly.integ.endpoint.SenderEndpoint}.
+ * &lt;li&gt;Call again &quot;isRequired&quot; to check if shipments have been sent correctly.&lt;br&gt;
+ * If you correctly end the use case,&lt;br&gt;
+ * otherwise try to determine the next shipments using other endpoints, try again after the timeout
+ * in step 2.
+ * &lt;/ol&gt;
+ *
+ * @author Grzegorz Ziemski
+ */
+<span class="fc" id="L36">public class OutgoingShipmentBean implements OutgoingShipment {</span>
+
+<span class="fc" id="L38">  private static final Logger LOGGER = Logger.getLogger(OutgoingShipmentBean.class.getName());</span>
+
+<span class="fc" id="L40">  protected EndpointRepositoryBean endpointRepository = new EndpointRepositoryBean();</span>
+
+<span class="fc" id="L42">  protected DocumentHeaderRepositoryBean documentHeaderRepository =</span>
+      new DocumentHeaderRepositoryBean();
+
+  /**
+   * &lt;ol&gt;
+   * &lt;li&gt;Check if the shipment has been determined.&lt;br&gt;
+   * If not, the shipment require to be determined (TRUE).
+   * &lt;li&gt;Check if the shipment has been sent to every recipient.&lt;br&gt;
+   * If not, the shipment require to be determined (TRUE).&lt;br&gt;
+   * &lt;li&gt;Otherwise the shipment does not require to be determined (FALSE).
+   * &lt;/ol&gt;
+   */
+  @Override
+  public boolean isRequired(DocumentHeader documentHeader) {
+    // 1
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (!existShipmentOutgoing(documentHeader)) {</span>
+<span class="fc" id="L58">      LOGGER.info(&quot;The shipment outgoing require to be determined.&quot;);</span>
+<span class="fc" id="L59">      return true;</span>
+    }
+
+    // 2
+<span class="fc" id="L63">    Map&lt;Participant, Boolean&gt; check = checkParticapantSend(documentHeader);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (checkEveryParticapantSend(check)) {</span>
+<span class="fc" id="L65">      LOGGER.info(&quot;The shipment outgoing does not require to be determined.&quot;);</span>
+<span class="fc" id="L66">      return false;</span>
+    } else {
+<span class="fc" id="L68">      LOGGER.info(&quot;The shipment outgoing require to be determined.&quot;);</span>
+<span class="fc" id="L69">      return true;</span>
+    }
+  }
+
+  /**
+   * 2. Check if the shipment has been determined.
+   */
+  protected boolean existShipmentOutgoing(DocumentHeader documentHeader) {
+<span class="fc bfc" id="L77" title="All 2 branches covered.">    for (Shipment shipment : documentHeader.getShipments()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">      if (shipment instanceof ShipmentOutgoing) {</span>
+<span class="fc" id="L79">        return true;</span>
+      }
+<span class="fc" id="L81">    }</span>
+<span class="fc" id="L82">    return false;</span>
+  }
+
+  /**
+   * Check if the shipment has been sent to recipients.
+   */
+  protected Map&lt;Participant, Boolean&gt; checkParticapantSend(DocumentHeader documentHeader) {
+<span class="fc" id="L89">    Map&lt;Participant, Boolean&gt; check = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    for (Shipment shipment : documentHeader.getShipments()) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">      if (shipment instanceof ShipmentOutgoing) {</span>
+<span class="fc" id="L92">        ShipmentOutgoing shipmentOut = (ShipmentOutgoing) shipment;</span>
+<span class="fc" id="L93">        Participant p = shipmentOut.getEndpoint().getParticipant();</span>
+<span class="fc" id="L94">        setParticipantSend(check, p,</span>
+<span class="fc" id="L95">            shipmentOut.getStatus().equals(ShipmentOutgoingStatus.COMITTED));</span>
+      }
+<span class="fc" id="L97">    }</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">    return check.isEmpty() ? null : check;</span>
+  }
+
+  protected void setParticipantSend(Map&lt;Participant, Boolean&gt; checked, Participant key,
+      boolean value) {
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (value) {</span>
+<span class="fc" id="L104">      checked.put(key, true);</span>
+    } else {
+<span class="fc" id="L106">      Boolean oldValue = checked.get(key);</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">      if (Objects.isNull(oldValue)) {</span>
+<span class="fc" id="L108">        checked.put(key, false);</span>
+      }
+    }
+<span class="fc" id="L111">  }</span>
+
+  /**
+   * 2. Check if the shipment has been sent to every recipient.
+   */
+  protected boolean checkEveryParticapantSend(Map&lt;Participant, Boolean&gt; check) {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    for (Map.Entry&lt;Participant, Boolean&gt; entry : check.entrySet()) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">      if (!entry.getValue()) {</span>
+<span class="fc" id="L119">        return false;</span>
+      }
+<span class="fc" id="L121">    }</span>
+<span class="fc" id="L122">    return true;</span>
+  }
+
+  /**
+   * Create one ShipmentOutgoing for each recipient.
+   */
+  @Override
+  public Collection&lt;ShipmentOutgoing&gt; determine(DocumentHeader documentHeader) {
+<span class="fc" id="L130">    LOGGER.info(</span>
+        &quot;Determine the outgoing shipment (endpoints, recipient) to which the document should be sent.&quot;);
+<span class="fc" id="L132">    List&lt;ShipmentOutgoing&gt; shipments = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    for (Participant participant : documentHeader.getRecipients()) {</span>
+<span class="fc" id="L135">      shipments.addAll(determine(documentHeader, participant));</span>
+<span class="fc" id="L136">    }</span>
+
+<span class="fc" id="L138">    return shipments;</span>
+  }
+
+  /**
+   * 1. Find current bodies.&lt;br&gt;
+   * 2. Find endpoints where&lt;br&gt;
+   * endpoint.documentFormat = body.documentFormat&lt;br&gt;
+   * endpoint.participant = participant&lt;br&gt;
+   * 3. Create the {@link ShipmentOutgoing}.
+   */
+  protected Collection&lt;ShipmentOutgoing&gt; determine(DocumentHeader documentHeader,
+      Participant participant) {
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    for (DocumentBody body : getDocumentHeaderRepository().findCurrent(documentHeader)) {</span>
+<span class="fc" id="L151">      List&lt;Endpoint&gt; endpoints =</span>
+<span class="fc" id="L152">          getEndpointRepository().findBy(participant, body.getDocumentFormat());</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">      for (Endpoint endpoint : endpoints) {</span>
+<span class="fc" id="L154">        ShipmentOutgoing shipment = new ShipmentOutgoing();</span>
+<span class="fc" id="L155">        shipment.setEndpoint(endpoint);</span>
+<span class="fc" id="L156">        shipment.setDocumentBody(body);</span>
+<span class="fc" id="L157">        shipment.setCost(0);</span>
+
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (!documentHeader.getShipments().contains(shipment)) {</span>
+<span class="fc" id="L160">          shipment.setStatus(ShipmentOutgoingStatus.AWAITING_SEND);</span>
+<span class="fc" id="L161">          return convertToList(shipment);</span>
+        }
+<span class="fc" id="L163">      }</span>
+<span class="fc" id="L164">    }</span>
+<span class="fc" id="L165">    return null;</span>
+  }
+
+  protected List&lt;ShipmentOutgoing&gt; convertToList(ShipmentOutgoing shipment) {
+<span class="fc" id="L169">    List&lt;ShipmentOutgoing&gt; shipments = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L170">    shipments.add(shipment);</span>
+<span class="fc" id="L171">    return shipments;</span>
+  }
+
+  public EndpointRepositoryBean getEndpointRepository() {
+<span class="fc" id="L175">    return endpointRepository;</span>
+  }
+
+  public void setEndpointRepository(EndpointRepositoryBean endpointRepository) {
+<span class="nc" id="L179">    this.endpointRepository = endpointRepository;</span>
+<span class="nc" id="L180">  }</span>
+
+  public DocumentHeaderRepositoryBean getDocumentHeaderRepository() {
+<span class="fc" id="L183">    return documentHeaderRepository;</span>
+  }
+
+  public void setDocumentHeaderRepository(DocumentHeaderRepositoryBean documentHeaderRepository) {
+<span class="nc" id="L187">    this.documentHeaderRepository = documentHeaderRepository;</span>
+<span class="nc" id="L188">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

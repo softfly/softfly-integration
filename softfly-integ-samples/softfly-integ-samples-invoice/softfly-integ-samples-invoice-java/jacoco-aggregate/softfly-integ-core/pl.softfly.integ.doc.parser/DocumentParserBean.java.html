@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentParserBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">softfly-integ-samples-invoice-java</a> &gt; <a href="../index.html" class="el_bundle">softfly-integ-core</a> &gt; <a href="index.source.html" class="el_package">pl.softfly.integ.doc.parser</a> &gt; <span class="el_source">DocumentParserBean.java</span></div><h1>DocumentParserBean.java</h1><pre class="source lang-java linenums">package pl.softfly.integ.doc.parser;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.logging.Logger;
+import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentHeader;
+import pl.softfly.integ.doc.repository.DocumentFormatRepositoryBean;
+import pl.softfly.integ.entity.Participant;
+
+
+/**
+ * Parse the document to POJO (needed attributes, recipients).
+ *
+ * @author Grzegorz Ziemski
+ */
+<span class="fc" id="L17">public class DocumentParserBean implements DocumentParser {</span>
+
+<span class="fc" id="L19">  private static final Logger LOGGER = Logger.getLogger(DocumentParserBean.class.getName());</span>
+
+<span class="fc" id="L21">  protected DocumentFormatRepositoryBean documentFormatRepository =</span>
+      new DocumentFormatRepositoryBean();
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public DocumentBody parse(DocumentBody sourceDocumentBody) {
+<span class="fc" id="L29">    Objects.requireNonNull(sourceDocumentBody);</span>
+<span class="fc" id="L30">    LOGGER.info(&quot;Parsed documentBody&quot;);</span>
+
+<span class="fc" id="L32">    DocumentBody parsedBody = new DocumentBody();</span>
+<span class="fc" id="L33">    parsedBody.setBody(sourceDocumentBody.getBody());</span>
+<span class="fc" id="L34">    parsedBody.setDocumentHeader(sourceDocumentBody.getDocumentHeader());</span>
+<span class="fc" id="L35">    parsedBody.setDocumentFormat(getDocumentFormatRepository().newPojo());</span>
+<span class="fc" id="L36">    parsedBody.getDocumentHeader().setRecipients(Arrays.asList(newParticipant()));</span>
+
+<span class="fc" id="L38">    Integer version = sourceDocumentBody.getVersion() + 1;</span>
+<span class="fc" id="L39">    parsedBody.setVersion(version);</span>
+<span class="fc" id="L40">    parsedBody.getDocumentHeader().setVersion(version);</span>
+
+<span class="fc" id="L42">    return parsedBody;</span>
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public DocumentBody parse(DocumentHeader documentHeader) {
+<span class="fc" id="L50">    Objects.requireNonNull(documentHeader);</span>
+<span class="fc" id="L51">    DocumentBody sourceDocumentBody = documentHeader.getBodies().get(0);</span>
+<span class="fc" id="L52">    return parse(sourceDocumentBody);</span>
+  }
+
+  protected Participant newParticipant() {
+<span class="fc" id="L56">    return new Participant();</span>
+  }
+
+  public DocumentFormatRepositoryBean getDocumentFormatRepository() {
+<span class="fc" id="L60">    return documentFormatRepository;</span>
+  }
+
+  public void setDocumentFormatRepository(DocumentFormatRepositoryBean documentFormatRepository) {
+<span class="nc" id="L64">    this.documentFormatRepository = documentFormatRepository;</span>
+<span class="nc" id="L65">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

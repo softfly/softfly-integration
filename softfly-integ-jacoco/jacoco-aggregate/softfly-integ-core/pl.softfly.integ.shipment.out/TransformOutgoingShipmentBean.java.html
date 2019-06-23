@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TransformOutgoingShipmentBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">softfly-integ-jacoco</a> &gt; <a href="../index.html" class="el_bundle">softfly-integ-core</a> &gt; <a href="index.source.html" class="el_package">pl.softfly.integ.shipment.out</a> &gt; <span class="el_source">TransformOutgoingShipmentBean.java</span></div><h1>TransformOutgoingShipmentBean.java</h1><pre class="source lang-java linenums">package pl.softfly.integ.shipment.out;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+import org.apache.commons.collections4.CollectionUtils;
+import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentFormat;
+import pl.softfly.integ.doc.entity.DocumentHeader;
+import pl.softfly.integ.doc.transformation.DocumentTransformation;
+import pl.softfly.integ.doc.transformation.DocumentTransformationBean;
+import pl.softfly.integ.endpoint.entity.Endpoint;
+import pl.softfly.integ.entity.Participant;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoingStatus;
+
+
+/**
+ * {@inheritDoc}
+ *
+ * @author Grzegorz Ziemski
+ */
+<span class="fc" id="L24">public class TransformOutgoingShipmentBean extends OutgoingShipmentBean {</span>
+
+<span class="fc" id="L26">  private static final Logger LOGGER =</span>
+<span class="fc" id="L27">      Logger.getLogger(TransformOutgoingShipmentBean.class.getName());</span>
+
+<span class="fc" id="L29">  protected DocumentTransformation documentTransformation = new DocumentTransformationBean();</span>
+
+  /**
+   * 1.Call {@link OutgoingShipmentBean#determine(DocumentHeader, Participant)}&lt;br&gt;
+   * If not empty, use case end.&lt;br&gt;
+   * 2. Find current bodies.&lt;br&gt;
+   * 3. Find endpoints where&lt;br&gt;
+   * endpoint.documentFormat.documentBusinessType = documentHeader.documentBusinessType&lt;br&gt;
+   * endpoint.participant = participant&lt;br&gt;
+   * 3.1. {@link DocumentTransformation#isSupported} Check if it is possible to transform into the
+   * supported document format by {@link Endpoint}.&lt;br&gt;
+   * 4. Create the {@link ShipmentOutgoing}.&lt;br&gt;
+   *
+   * @return {@link ShipmentOutgoing} with the ascending cost.
+   */
+  @Override
+  protected Collection&lt;ShipmentOutgoing&gt; determine(DocumentHeader documentHeader,
+      Participant participant) {
+    // 1
+<span class="fc" id="L48">    Collection&lt;ShipmentOutgoing&gt; shipmentsC = super.determine(documentHeader, participant);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (CollectionUtils.isNotEmpty(shipmentsC)) {</span>
+<span class="fc" id="L50">      return shipmentsC;</span>
+    }
+    // 2
+<span class="fc" id="L53">    List&lt;DocumentBody&gt; bodies = getDocumentHeaderRepository().findCurrent(documentHeader);</span>
+    // 3
+<span class="fc" id="L55">    List&lt;Endpoint&gt; endpoints =</span>
+<span class="fc" id="L56">        getEndpointRepository().findBy(participant, documentHeader.getDocumentBusinessType());</span>
+<span class="fc" id="L57">    TreeSet&lt;ShipmentOutgoing&gt; shipments = new TreeSet&lt;&gt;(new CostAscOutgoingShipmentComparator());</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">    for (Endpoint endpoint : endpoints) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">      for (DocumentBody body : bodies) {</span>
+<span class="fc" id="L60">        final DocumentFormat sourceDocumentFormat = body.getDocumentFormat();</span>
+<span class="fc" id="L61">        final DocumentFormat targetDocumentFormat = endpoint.getDocumentFormat();</span>
+
+<span class="fc" id="L63">        ShipmentOutgoing shipment = new ShipmentOutgoing();</span>
+<span class="fc" id="L64">        shipment.setEndpoint(endpoint);</span>
+<span class="fc" id="L65">        shipment.setDocumentBody(body);</span>
+<span class="fc" id="L66">        shipment.setStatus(ShipmentOutgoingStatus.NONE);</span>
+
+        // Transformation is not needed. Skipped because it has been checked by {@link
+        // OutgoingShipmentBean}
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        boolean added = !sourceDocumentFormat.equals(targetDocumentFormat);</span>
+        // 3.1.
+<span class="fc" id="L72">        boolean supported =</span>
+<span class="fc" id="L73">            getDocumentTransformation().isSupported(sourceDocumentFormat, targetDocumentFormat);</span>
+<span class="pc bpc" id="L74" title="3 of 6 branches missed.">        if (added &amp;&amp; supported &amp;&amp; !documentHeader.getShipments().contains(shipment)) {</span>
+          // 4. With transform
+<span class="fc" id="L76">          shipment.setCost(100);// TODO implement the cost system</span>
+<span class="fc" id="L77">          shipment.setStatus(ShipmentOutgoingStatus.AWAITING_SEND);</span>
+<span class="fc" id="L78">          shipments.add(shipment);</span>
+        }
+<span class="fc" id="L80">      }</span>
+<span class="fc" id="L81">    }</span>
+
+<span class="fc" id="L83">    return convertToList(shipments.first());</span>
+  }
+
+  public DocumentTransformation getDocumentTransformation() {
+<span class="fc" id="L87">    return documentTransformation;</span>
+  }
+
+  public void setDocumentTransformation(DocumentTransformation documentTransformation) {
+<span class="nc" id="L91">    this.documentTransformation = documentTransformation;</span>
+<span class="nc" id="L92">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ForwardDocumentFlowBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">softfly-integ-jacoco</a> &gt; <a href="../index.html" class="el_bundle">softfly-integ-samples-invoice-java</a> &gt; <a href="index.source.html" class="el_package">pl.softfly.integ.samples.invoice.flows</a> &gt; <span class="el_source">ForwardDocumentFlowBean.java</span></div><h1>ForwardDocumentFlowBean.java</h1><pre class="source lang-java linenums">package pl.softfly.integ.samples.invoice.flows;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
+import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentBusinessType;
+import pl.softfly.integ.doc.entity.DocumentFormat;
+import pl.softfly.integ.doc.entity.DocumentHeader;
+import pl.softfly.integ.doc.parser.DocumentParser;
+import pl.softfly.integ.doc.parser.DocumentParserBean;
+import pl.softfly.integ.doc.recognize.DocumentRecognizeFormat;
+import pl.softfly.integ.doc.recognize.DocumentRecognizeFormatBean;
+import pl.softfly.integ.doc.recognize.DocumentRecognizeFormatUtil;
+import pl.softfly.integ.doc.transformation.DocumentTransformation;
+import pl.softfly.integ.doc.transformation.DocumentTransformationBean;
+import pl.softfly.integ.doc.validation.business.DocumentValidationBusiness;
+import pl.softfly.integ.doc.validation.business.DocumentValidationBusinessBean;
+import pl.softfly.integ.doc.validation.schema.DocumentValidationSchema;
+import pl.softfly.integ.doc.validation.schema.DocumentValidationSchemaBean;
+import pl.softfly.integ.endpoint.SenderEndpoint;
+import pl.softfly.integ.endpoint.SenderEndpointBean;
+import pl.softfly.integ.endpoint.entity.Endpoint;
+import pl.softfly.integ.samples.invoice.entity.InvoiceDocumentStatus;
+import pl.softfly.integ.shipment.entity.Shipment;
+import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
+import pl.softfly.integ.shipment.out.OutgoingShipment;
+import pl.softfly.integ.shipment.out.TransformOutgoingShipmentBean;
+
+
+/**
+ * The example flow that transmits an invoice from the seller to the buyer.
+ *
+ * &lt;p&gt;
+ * &lt;table border=&quot;1&quot;&gt;
+ * &lt;caption&gt;Business flow&lt;/caption&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;#&lt;/td&gt;
+ * &lt;td&gt;Receive the document from the endpoint.&lt;/td&gt;
+ * &lt;td&gt;{@link pl.softfly.integ.shipment.in.IncomingShipment}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;1&lt;/td&gt;
+ * &lt;td&gt;Recognize the document format.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentRecognizeFormat}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;2&lt;/td&gt;
+ * &lt;td&gt;Validate schema of the document.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentValidationSchema}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;3&lt;/td&gt;
+ * &lt;td&gt;(Optional) Transform to the supported document format by DocumentValidationBusiness.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentTransformation}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;4&lt;/td&gt;
+ * &lt;td&gt;Validate business validation of the document.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentValidationBusiness}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;5&lt;/td&gt;
+ * &lt;td&gt;Parse the document to POJO (recipients).&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentParser}&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;&lt;/td&gt;
+ * &lt;td&gt;Other business steps. (Changes in the content of the document.)&lt;/td&gt;
+ * &lt;td&gt;&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;6&lt;/td&gt;
+ * &lt;td&gt;Determine the shipment (endpoints, recipient) to which the document should be sent.&lt;/td&gt;
+ * &lt;td&gt;{@link OutgoingShipment }&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;7&lt;/td&gt;
+ * &lt;td&gt;Generate the document from POJO.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentTransformation }&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;8&lt;/td&gt;
+ * &lt;td&gt;(Optional) Transform to the recipient's document format.&lt;/td&gt;
+ * &lt;td&gt;{@link DocumentTransformation }&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;tr&gt;
+ * &lt;td&gt;9&lt;/td&gt;
+ * &lt;td&gt;Send the document.&lt;/td&gt;
+ * &lt;td&gt;{@link SenderEndpoint }&lt;/td&gt;
+ * &lt;/tr&gt;
+ * &lt;/table&gt;
+ *
+ * @author Grzegorz Ziemski
+ */
+<span class="fc" id="L97">public class ForwardDocumentFlowBean {</span>
+
+  protected static final int LIMIT_TRY_DETERMINE_SHIPMENT = 10;
+
+<span class="fc" id="L101">  private DocumentRecognizeFormat documentRecognize = new DocumentRecognizeFormatBean();</span>
+
+<span class="fc" id="L103">  private DocumentValidationSchema documentValidationSchema = new DocumentValidationSchemaBean();</span>
+
+<span class="fc" id="L105">  private DocumentValidationBusiness documentValidationBusiness =</span>
+      new DocumentValidationBusinessBean();
+
+<span class="fc" id="L108">  private DocumentParser documentParser = new DocumentParserBean();</span>
+
+<span class="fc" id="L110">  private DocumentTransformation documentTransformation = new DocumentTransformationBean();</span>
+
+<span class="fc" id="L112">  private OutgoingShipment outgoingShipment = new TransformOutgoingShipmentBean();</span>
+
+<span class="fc" id="L114">  private SenderEndpoint senderEndpoint = new SenderEndpointBean();</span>
+
+  public ForwardDocumentFlowResponse start(Shipment shipmentIncoming) {
+<span class="fc" id="L117">    ForwardDocumentFlowResponse response = new ForwardDocumentFlowResponse();</span>
+
+    // Receive the document from the endpoint.
+<span class="fc" id="L120">    DocumentHeader documentHeader = shipmentIncoming.getDocumentBody().getDocumentHeader();</span>
+
+    // 1. Recognize the document format.
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (!recognizeDocument(documentHeader)) {</span>
+<span class="fc" id="L124">      response.setResult(documentHeader.getStatus().toString());</span>
+<span class="fc" id="L125">      return response;</span>
+    }
+
+    // 2. Validate schema of the document.
+<span class="fc" id="L129">    List&lt;?&gt; errors = validateDocumentSchema(documentHeader);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (CollectionUtils.isNotEmpty(errors)) {</span>
+<span class="fc" id="L131">      response.setResult(documentHeader.getStatus().toString());</span>
+<span class="fc" id="L132">      response.setErrors(errors);</span>
+<span class="fc" id="L133">      return response;</span>
+    }
+
+    // 3. (Optional) Transform to the supported document format by DocumentValidationBusiness.
+<span class="fc" id="L137">    errors = transformBeforeValidateDocumentBusiness(documentHeader);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (CollectionUtils.isNotEmpty(errors)) {</span>
+<span class="nc" id="L139">      response.setResult(documentHeader.getStatus().toString());</span>
+<span class="nc" id="L140">      response.setErrors(errors);</span>
+<span class="nc" id="L141">      return response;</span>
+    }
+
+    // 4. Validate business validation of the document.
+<span class="fc" id="L145">    errors = validateDocumentBusiness(documentHeader);</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">    if (CollectionUtils.isNotEmpty(errors)) {</span>
+<span class="fc" id="L147">      response.setResult(documentHeader.getStatus().toString());</span>
+<span class="fc" id="L148">      response.setErrors(errors);</span>
+<span class="fc" id="L149">      return response;</span>
+    }
+
+    // 5. Parse the document to POJO (recipients).
+<span class="fc" id="L153">    parseDocument(documentHeader);</span>
+
+    // Other business steps. (Changes in the content of the document.)
+
+<span class="fc" id="L157">    for (int i = 0;; i++) {</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">      if (i &gt; LIMIT_TRY_DETERMINE_SHIPMENT) {</span>
+<span class="nc" id="L159">        throw new RuntimeException(&quot;LIMIT_TRY_DETERMINE_SHIPMENT&quot;);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">      } else if (getOutgoingShipment().isRequired(documentHeader)) {</span>
+        // 6. Determine the shipment (endpoints, recipient) to which the document should be sent.
+<span class="fc" id="L162">        Collection&lt;ShipmentOutgoing&gt; shipments = outgoingShipment.determine(documentHeader);</span>
+<span class="fc" id="L163">        documentHeader.getShipments().addAll(shipments);</span>
+
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        for (ShipmentOutgoing shipment : shipments) {</span>
+<span class="fc" id="L166">          DocumentBody orginBody = shipment.getDocumentBody();</span>
+<span class="fc" id="L167">          Endpoint endpoint = shipment.getEndpoint();</span>
+
+          // 7. Generate the document from POJO.
+          // 8. (Optional) Transform to the recipient's document format.
+<span class="fc bfc" id="L171" title="All 2 branches covered.">          if (!orginBody.getDocumentFormat().equals(endpoint.getDocumentFormat())) {</span>
+<span class="fc" id="L172">            shipment.setDocumentBody(transformDocument(orginBody, endpoint.getDocumentFormat()));</span>
+          }
+
+          // 9. Send document.
+<span class="fc" id="L176">          sendDocument(shipment);</span>
+<span class="fc" id="L177">        }</span>
+      } else {
+        break;
+      }
+    }
+
+<span class="fc" id="L183">    response.setResult(documentHeader.getStatus().toString());</span>
+<span class="fc" id="L184">    return response;</span>
+  }
+
+  /**
+   * 1. Recognize the document format.
+   */
+  protected boolean recognizeDocument(DocumentHeader header) {
+<span class="fc" id="L191">    boolean isRecognize =</span>
+<span class="fc" id="L192">        DocumentRecognizeFormatUtil.enrichRecognize(getDocumentRecognize(), header);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">    header.setStatus(</span>
+        isRecognize ? InvoiceDocumentStatus.RECOGNIZED : InvoiceDocumentStatus.NOT_RECOGNIZED);
+<span class="fc" id="L195">    return isRecognize;</span>
+  }
+
+  /**
+   * 2. Validate schema of the document.
+   */
+  protected List&lt;?&gt; validateDocumentSchema(DocumentHeader header) {
+<span class="fc" id="L202">    List&lt;?&gt; list = getDocumentValidationSchema().validate(header);</span>
+<span class="fc" id="L203">    boolean isValid = CollectionUtils.isEmpty(list);</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">    header.setStatus(</span>
+        isValid ? InvoiceDocumentStatus.SCHEME_VALID : InvoiceDocumentStatus.SCHEME_NOT_VALID);
+<span class="fc" id="L206">    return list;</span>
+  }
+
+  /**
+   * 3. (Optional) Transform to the supported document format by
+   * {@link pl.softfly.integ.doc.validation.business.DocumentValidationBusiness}.
+   *
+   * &lt;p&gt;
+   * 3.1. Check whether transformation is necessary.
+   *
+   * &lt;p&gt;
+   * 3.2. Transform to the supported document format by
+   * {@link pl.softfly.integ.doc.validation.business.DocumentValidationBusiness}.
+   *
+   * &lt;p&gt;
+   * 3.2.E Error, It is not possible to transform into a document format supported by
+   * {@link pl.softfly.integ.doc.validation.business.DocumentValidationBusiness}.
+   */
+  protected List&lt;?&gt; transformBeforeValidateDocumentBusiness(DocumentHeader documentHeader) {
+<span class="fc bfc" id="L225" title="All 2 branches covered.">    BUSINESS_TYPE: for (DocumentBusinessType businessType : documentHeader</span>
+<span class="fc" id="L226">        .getDocumentBusinessType()) {</span>
+<span class="fc" id="L227">      List&lt;DocumentFormat&gt; documentFormats =</span>
+<span class="fc" id="L228">          getDocumentValidationBusiness().getSupported(businessType);</span>
+
+      // 3.1.
+<span class="fc bfc" id="L231" title="All 2 branches covered.">      for (DocumentBody body : documentHeader.getBodies()) {</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (documentFormats.contains(body.getDocumentFormat())) {</span>
+<span class="nc" id="L233">          continue BUSINESS_TYPE;</span>
+        }
+<span class="fc" id="L235">      }</span>
+
+      // 3.2.
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">      for (DocumentBody body : documentHeader.getBodies()) {</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        for (DocumentFormat supportedDocumentFormats : documentFormats) {</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">          if (getDocumentTransformation().isSupported(body.getDocumentFormat(),</span>
+              supportedDocumentFormats)) {
+<span class="fc" id="L242">            transformDocument(body, supportedDocumentFormats);</span>
+<span class="fc" id="L243">            continue BUSINESS_TYPE;</span>
+          }
+<span class="nc" id="L245">        }</span>
+<span class="nc" id="L246">      }</span>
+
+      // 3.2.E.
+<span class="nc" id="L249">      documentHeader.setStatus(InvoiceDocumentStatus.BUSINESS_NOT_VALID);</span>
+<span class="nc" id="L250">      List&lt;String&gt; errors = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L251">      errors.add(</span>
+          &quot;ERROR: It is not possible to transform into a document format supported by DocumentValidationBusiness.&quot;);
+<span class="nc" id="L253">      return errors;</span>
+    }
+<span class="fc" id="L255">    return null;</span>
+  }
+
+  /**
+   * 4. Validate business validation of the document.
+   */
+  protected List&lt;?&gt; validateDocumentBusiness(DocumentHeader documentHeader) {
+<span class="fc" id="L262">    List&lt;?&gt; list = getDocumentValidationBusiness().validate(documentHeader);</span>
+<span class="pc bpc" id="L263" title="1 of 4 branches missed.">    boolean isValid = list == null || list.isEmpty();</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">    documentHeader.setStatus(</span>
+        isValid ? InvoiceDocumentStatus.BUSINESS_VALID : InvoiceDocumentStatus.BUSINESS_NOT_VALID);
+<span class="fc" id="L266">    return list;</span>
+  }
+
+  /**
+   * 5. Parse the document to POJO (recipients).
+   */
+  protected void parseDocument(DocumentHeader documentHeader) {
+<span class="fc" id="L273">    documentHeader.getBodies().add(getDocumentParser().parse(documentHeader));</span>
+<span class="fc" id="L274">    documentHeader.setStatus(InvoiceDocumentStatus.PARSED);</span>
+<span class="fc" id="L275">  }</span>
+
+  protected DocumentBody transformDocument(DocumentBody documentBody,
+      DocumentFormat targetDocumentFormat) {
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">    if (documentBody.getDocumentFormat().equals(targetDocumentFormat)) {</span>
+<span class="nc" id="L280">      return documentBody;</span>
+    } else {
+<span class="fc" id="L282">      DocumentBody newBody =</span>
+<span class="fc" id="L283">          getDocumentTransformation().transform(documentBody, targetDocumentFormat);</span>
+<span class="fc" id="L284">      documentBody.getDocumentHeader().getBodies().add(newBody);</span>
+<span class="fc" id="L285">      return newBody;</span>
+    }
+  }
+
+  protected boolean sendDocument(ShipmentOutgoing shipment) {
+<span class="fc bfc" id="L290" title="All 2 branches covered.">    if (getSenderEndpoint().send(shipment)) {</span>
+<span class="fc" id="L291">      shipment.getDocumentBody().getDocumentHeader().setStatus(InvoiceDocumentStatus.SUBMITTED);</span>
+<span class="fc" id="L292">      return true;</span>
+    } else {
+<span class="fc" id="L294">      return false;</span>
+    }
+  }
+
+  public DocumentRecognizeFormat getDocumentRecognize() {
+<span class="fc" id="L299">    return documentRecognize;</span>
+  }
+
+  public void setDocumentRecognize(DocumentRecognizeFormat documentRecognize) {
+<span class="nc" id="L303">    this.documentRecognize = documentRecognize;</span>
+<span class="nc" id="L304">  }</span>
+
+  public DocumentValidationSchema getDocumentValidationSchema() {
+<span class="fc" id="L307">    return documentValidationSchema;</span>
+  }
+
+  public void setDocumentValidationSchema(DocumentValidationSchema documentValidationSchema) {
+<span class="nc" id="L311">    this.documentValidationSchema = documentValidationSchema;</span>
+<span class="nc" id="L312">  }</span>
+
+  public DocumentValidationBusiness getDocumentValidationBusiness() {
+<span class="fc" id="L315">    return documentValidationBusiness;</span>
+  }
+
+  public void setDocumentValidationBusiness(DocumentValidationBusiness documentValidationBusiness) {
+<span class="nc" id="L319">    this.documentValidationBusiness = documentValidationBusiness;</span>
+<span class="nc" id="L320">  }</span>
+
+  public DocumentParser getDocumentParser() {
+<span class="fc" id="L323">    return documentParser;</span>
+  }
+
+  public void setDocumentParser(DocumentParser documentParser) {
+<span class="nc" id="L327">    this.documentParser = documentParser;</span>
+<span class="nc" id="L328">  }</span>
+
+  public DocumentTransformation getDocumentTransformation() {
+<span class="fc" id="L331">    return documentTransformation;</span>
+  }
+
+  public void setDocumentTransformation(DocumentTransformation documentTransformation) {
+<span class="nc" id="L335">    this.documentTransformation = documentTransformation;</span>
+<span class="nc" id="L336">  }</span>
+
+  public OutgoingShipment getOutgoingShipment() {
+<span class="fc" id="L339">    return outgoingShipment;</span>
+  }
+
+  public void setOutgoingShipment(OutgoingShipment outgoingShipment) {
+<span class="nc" id="L343">    this.outgoingShipment = outgoingShipment;</span>
+<span class="nc" id="L344">  }</span>
+
+  public SenderEndpoint getSenderEndpoint() {
+<span class="fc" id="L347">    return senderEndpoint;</span>
+  }
+
+  public void setSenderEndpoint(SenderEndpoint senderEndpoint) {
+<span class="nc" id="L351">    this.senderEndpoint = senderEndpoint;</span>
+<span class="nc" id="L352">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
