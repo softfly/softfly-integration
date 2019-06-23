@@ -8,6 +8,7 @@ script:
   - "mvn verify -Pjacoco"
 
 after_success:
+  - "mvn -Pjacoco coveralls:report"
   - "mvn -Pjavadoc site"
   - "mvn site:stage"
 
