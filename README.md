@@ -5,6 +5,9 @@
 <br/>
 Services (beans) for repetitive and common functions of integration platforms.
 
+#### Links:
+https://softfly.github.io/softfly-integration/
+
 #### Services (beans):
 * [IncomingShipment](/softfly-integ-core/src/main/java/pl/softfly/integ/shipment/in)<br/>
 Create IncomingShipment with details from where it came from.

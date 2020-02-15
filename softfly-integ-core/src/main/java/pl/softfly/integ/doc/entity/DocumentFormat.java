@@ -1,11 +1,10 @@
 package pl.softfly.integ.doc.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity.
- *
- * @author Grzegorz Ziemski
  */
 public class DocumentFormat implements Serializable {
 
@@ -40,8 +39,23 @@ public class DocumentFormat implements Serializable {
   }
 
   @Override
-  public String toString() {
-    return "DocumentFormat [name=" + name + "]";
+  public int hashCode() {
+    return Objects.hash(documentBusinessType, id, name);
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DocumentFormat other = (DocumentFormat) obj;
+    return Objects.equals(documentBusinessType, other.documentBusinessType)
+        && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+  }
 }

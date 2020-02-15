@@ -11,8 +11,6 @@ import pl.softfly.integ.shipment.entity.ShipmentOutgoingStatus;
 
 /**
  * Send the document via endpoint.
- *
- * @author Grzegorz Ziemski
  */
 public class SenderEndpointBean implements SenderEndpoint {
 
@@ -25,7 +23,19 @@ public class SenderEndpointBean implements SenderEndpoint {
    * {@inheritDoc}
    */
   @Override
-  public boolean send(DocumentBody documentBody, Endpoint endpoint) {
+  public ShipmentOutgoing send(ShipmentOutgoing shipment) {
+    Objects.requireNonNull(shipment);
+    DocumentBody documentBody = shipment.getDocumentBody();
+
+    if (send(documentBody, shipment.getEndpoint())) {
+      shipment.setStatus(ShipmentOutgoingStatus.COMITTED);
+    } else {
+      shipment.setStatus(ShipmentOutgoingStatus.ERROR);
+    }
+    return shipment;
+  }
+
+  protected boolean send(DocumentBody documentBody, Endpoint endpoint) {
     Objects.requireNonNull(documentBody);
     Objects.requireNonNull(endpoint);
     if (endpoint.getDocumentFormat().equals(getDocumentFormatRepository().newInvoice3())) {
@@ -37,20 +47,6 @@ public class SenderEndpointBean implements SenderEndpoint {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean send(ShipmentOutgoing shipment) {
-    if (send(shipment.getDocumentBody(), shipment.getEndpoint())) {
-      shipment.setStatus(ShipmentOutgoingStatus.COMITTED);
-      return true;
-    } else {
-      shipment.setStatus(ShipmentOutgoingStatus.ERROR);
-      return false;
-    }
-  }
-
   public DocumentFormatRepositoryBean getDocumentFormatRepository() {
     return documentFormatRepository;
   }
@@ -58,5 +54,4 @@ public class SenderEndpointBean implements SenderEndpoint {
   public void setDocumentFormatRepository(DocumentFormatRepositoryBean documentFormatRepository) {
     this.documentFormatRepository = documentFormatRepository;
   }
-
 }

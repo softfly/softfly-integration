@@ -5,8 +5,6 @@ import pl.softfly.integ.doc.entity.DocumentFormat;
 
 /**
  * Transform the document to other format.
- *
- * @author Grzegorz Ziemski
  */
 public interface DocumentTransformation {
 

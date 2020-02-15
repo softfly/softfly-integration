@@ -1,17 +1,21 @@
 package pl.softfly.integ.doc.parser;
 
-import pl.softfly.integ.doc.entity.DocumentBody;
+import java.util.List;
+import java.util.Set;
+import pl.softfly.integ.doc.entity.DocumentBusinessType;
+import pl.softfly.integ.doc.entity.DocumentFormat;
 import pl.softfly.integ.doc.entity.DocumentHeader;
 
 /**
- * Parse the document to POJO (needed attributes, recipients).
- *
- * @author Grzegorz Ziemski
+ * Parse the document to POJO (enriches with attributes, recipients).
  */
 public interface DocumentParser {
 
-  DocumentBody parse(DocumentBody documentBody);
+  List<DocumentFormat> getSupported(Set<DocumentBusinessType> documentBusinessType);
 
-  DocumentBody parse(DocumentHeader documentHeader);
+  /**
+   * Parse the document to POJO (enriches with attributes, recipients).
+   */
+  DocumentHeader parse(DocumentHeader documentHeader);
 
 }

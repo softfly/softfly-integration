@@ -1,6 +1,7 @@
 package pl.softfly.integ.doc.entity;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import pl.softfly.integ.entity.Participant;
@@ -9,26 +10,31 @@ import pl.softfly.integ.shipment.entity.Shipment;
 
 /**
  * Entity.
- *
- * @author Grzegorz Ziemski
  */
-public class DocumentHeader implements Serializable {
+public class DocumentHeader implements Serializable, Cloneable {
 
   private Integer id;
 
   private Set<DocumentBusinessType> documentBusinessType;
 
-  private DocumentStatus status;
+  /**
+   * Object because: com.sun.xml.bind.v2.runtime.IllegalAnnotationsException: 1 counts of
+   * IllegalAnnotationExceptions pl.softfly.integ.doc.entity.DocumentStatus is an interface, and
+   * JAXB can't handle interfaces.
+   */
+  private Object status;
 
   private Participant sender;
 
-  private List<Participant> recipients;
+  private List<Participant> recipients = new LinkedList<>();
 
-  private List<DocumentBody> bodies;
+  private List<DocumentBody> bodies = new LinkedList<>();
 
   private List<Shipment> shipments;
 
   private Integer version;
+
+  private List<ProcessingLog> processingLogs = new LinkedList<>();
 
   public Integer getId() {
     return id;
@@ -46,7 +52,7 @@ public class DocumentHeader implements Serializable {
     this.documentBusinessType = documentBusinessType;
   }
 
-  public DocumentStatus getStatus() {
+  public Object getStatus() {
     return status;
   }
 
@@ -94,4 +100,16 @@ public class DocumentHeader implements Serializable {
     this.version = version;
   }
 
+  public List<ProcessingLog> getProcessingLogs() {
+    return processingLogs;
+  }
+
+  public void setProcessingLogs(List<ProcessingLog> processingLogs) {
+    this.processingLogs = processingLogs;
+  }
+
+  @Override
+  public DocumentHeader clone() throws CloneNotSupportedException {
+    return (DocumentHeader) super.clone();
+  }
 }

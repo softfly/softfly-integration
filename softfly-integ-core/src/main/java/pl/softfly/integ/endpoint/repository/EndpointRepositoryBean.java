@@ -14,15 +14,13 @@ import pl.softfly.integ.entity.Participant;
 
 /**
  * Repository.
- *
- * @author Grzegorz Ziemski
  */
 public class EndpointRepositoryBean {
 
   protected static final Map<Participant, Map<DocumentFormat, Endpoint>> prototypes =
       new HashMap<>();
-
-  protected DocumentFormatRepositoryBean documentFormatRepository =
+  private static int nextId = 1;
+  private DocumentFormatRepositoryBean documentFormatRepository =
       new DocumentFormatRepositoryBean();
 
   public List<Endpoint> findBy(Participant participant, DocumentFormat documentFormat) {
@@ -62,6 +60,7 @@ public class EndpointRepositoryBean {
 
   protected Endpoint newEndpoint(Participant participant, DocumentFormat documentFormat) {
     Endpoint e = new Endpoint();
+    e.setId(nextId++);
     e.setDocumentFormat(documentFormat);
     e.setParticipant(participant);
     return e;
@@ -74,5 +73,4 @@ public class EndpointRepositoryBean {
   public void setDocumentFormatRepository(DocumentFormatRepositoryBean documentFormatRepository) {
     this.documentFormatRepository = documentFormatRepository;
   }
-
 }

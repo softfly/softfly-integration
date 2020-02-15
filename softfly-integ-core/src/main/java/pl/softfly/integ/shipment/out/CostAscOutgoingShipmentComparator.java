@@ -6,8 +6,6 @@ import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
 
 /**
  * The cost of preparation for sending. Compare which endpoint is better to choose.
- *
- * @author Grzegorz Ziemski
  */
 public class CostAscOutgoingShipmentComparator implements Comparator<ShipmentOutgoing> {
 

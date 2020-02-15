@@ -7,22 +7,16 @@ import pl.softfly.integ.shipment.entity.ShipmentOutgoing;
 
 /**
  * Determine the outgoing shipment (endpoints, recipient) to which the document should be sent.
- *
- * <ol>
- * <li>Call {@link #isRequired}.
- * <li>Call {@link #determine}.
- * <li>Send shipments by {@link pl.softfly.integ.endpoint.SenderEndpoint}.
- * <li>Call again "isRequired" to check if shipments have been sent correctly. If you correctly end
- * the use case, otherwise try to determine the next shipments using other endpoints, try again
- * after the timeout in step 2.
- * </ol>
- *
- * @author Grzegorz Ziemski
  */
 public interface OutgoingShipment {
 
-  boolean isRequired(DocumentHeader documentHeader);
-
+  /**
+   * <p>
+   * Tries to create one {@link ShipmentOutgoing} for each recipient.
+   * <p>
+   * The method can be called multiple times. Each next call determine next {@link ShipmentOutgoing}
+   * based on the state of previous {@link ShipmentOutgoing}.
+   */
   Collection<ShipmentOutgoing> determine(DocumentHeader documentHeader);
 
 }

@@ -1,19 +1,19 @@
 package pl.softfly.integ.doc.parser;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentBusinessType;
+import pl.softfly.integ.doc.entity.DocumentFormat;
 import pl.softfly.integ.doc.entity.DocumentHeader;
+import pl.softfly.integ.doc.entity.ProcessingLog;
 import pl.softfly.integ.doc.repository.DocumentFormatRepositoryBean;
+import pl.softfly.integ.doc.repository.DocumentHeaderRepositoryBean;
 import pl.softfly.integ.entity.Participant;
 
-
-/**
- * Parse the document to POJO (needed attributes, recipients).
- *
- * @author Grzegorz Ziemski
- */
 public class DocumentParserBean implements DocumentParser {
 
   private static final Logger LOGGER = Logger.getLogger(DocumentParserBean.class.getName());
@@ -21,39 +21,42 @@ public class DocumentParserBean implements DocumentParser {
   protected DocumentFormatRepositoryBean documentFormatRepository =
       new DocumentFormatRepositoryBean();
 
-  /**
-   * {@inheritDoc}
-   */
+  protected DocumentHeaderRepositoryBean documentHeaderRepository =
+      new DocumentHeaderRepositoryBean();
+
   @Override
-  public DocumentBody parse(DocumentBody sourceDocumentBody) {
-    Objects.requireNonNull(sourceDocumentBody);
-    LOGGER.info("Parsed documentBody");
-
-    DocumentBody parsedBody = new DocumentBody();
-    parsedBody.setBody(sourceDocumentBody.getBody());
-    parsedBody.setDocumentHeader(sourceDocumentBody.getDocumentHeader());
-    parsedBody.setDocumentFormat(getDocumentFormatRepository().newPojo());
-    parsedBody.getDocumentHeader().setRecipients(Arrays.asList(newParticipant()));
-
-    Integer version = sourceDocumentBody.getVersion() + 1;
-    parsedBody.setVersion(version);
-    parsedBody.getDocumentHeader().setVersion(version);
-
-    return parsedBody;
+  public List<DocumentFormat> getSupported(Set<DocumentBusinessType> documentBusinessType) {
+    return Arrays.asList(getDocumentFormatRepository().newInvoice3());
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public DocumentBody parse(DocumentHeader documentHeader) {
-    Objects.requireNonNull(documentHeader);
-    DocumentBody sourceDocumentBody = documentHeader.getBodies().get(0);
-    return parse(sourceDocumentBody);
+  public DocumentHeader parse(DocumentHeader documentHeader) {
+    try {
+      Objects.requireNonNull(documentHeader);
+      LOGGER.info("Parsed documentBody");
+      DocumentHeader documentHeaderOut = new DocumentHeader();
+      documentHeaderOut.setRecipients(Arrays.asList(newParticipant1()));
+
+      DocumentBody documentBodyOut = new DocumentBody();
+      documentBodyOut.setDocumentFormat(getDocumentFormatRepository().newPojo());
+      documentBodyOut.setVersion(documentHeaderRepository.findCurrentVersion(documentHeader));
+
+      ProcessingLog log = new ProcessingLog();
+      log.setSource(DocumentParser.class.getSimpleName());
+      log.setMsg("Parsed documentBody");
+
+      documentHeaderOut.setBodies(Arrays.asList(documentBodyOut));
+      return documentHeaderOut;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  protected Participant newParticipant() {
-    return new Participant();
+  protected Participant newParticipant1() {
+    Participant participant = new Participant();
+    participant.setId(1);
+    participant.setName("Recipients1");
+    return participant;
   }
 
   public DocumentFormatRepositoryBean getDocumentFormatRepository() {
@@ -64,4 +67,11 @@ public class DocumentParserBean implements DocumentParser {
     this.documentFormatRepository = documentFormatRepository;
   }
 
+  public DocumentHeaderRepositoryBean getDocumentHeaderRepository() {
+    return documentHeaderRepository;
+  }
+
+  public void setDocumentHeaderRepository(DocumentHeaderRepositoryBean documentHeaderRepository) {
+    this.documentHeaderRepository = documentHeaderRepository;
+  }
 }

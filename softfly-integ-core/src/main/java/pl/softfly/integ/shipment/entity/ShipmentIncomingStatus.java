@@ -2,8 +2,6 @@ package pl.softfly.integ.shipment.entity;
 
 /**
  * Entity.
- *
- * @author Grzegorz Ziemski
  */
 public enum ShipmentIncomingStatus {
   ERROR(ShipmentStatusLiterals.ERROR_ID, ShipmentStatusLiterals.ERROR), //

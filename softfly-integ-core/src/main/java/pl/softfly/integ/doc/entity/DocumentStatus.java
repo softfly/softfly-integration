@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 /**
  * Entity.
- *
- * @author Grzegorz Ziemski
  */
 public interface DocumentStatus extends Serializable {
 

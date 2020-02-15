@@ -7,8 +7,6 @@ import pl.softfly.integ.doc.entity.DocumentBusinessType;
 
 /**
  * Repository.
- *
- * @author Grzegorz Ziemski
  */
 public class DocumentBusinessTypeRepositoryBean {
 
@@ -27,5 +25,4 @@ public class DocumentBusinessTypeRepositoryBean {
     }
     return documentBusinessType;
   }
-
 }

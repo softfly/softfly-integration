@@ -17,7 +17,8 @@
   <description>The example application that transmits an invoice from the seller to the buyer.</description>
 
   <modules>
-    <module>softfly-integ-samples-invoice-java</module>
+    <module>softfly-integ-samples-invoice-common</module>
+	<module>softfly-integ-samples-invoice-javase</module>
   </modules>
 
 </project>

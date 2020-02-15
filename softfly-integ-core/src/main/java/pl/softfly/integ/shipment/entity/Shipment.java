@@ -8,8 +8,6 @@ import pl.softfly.integ.endpoint.entity.Endpoint;
 
 /**
  * Entity.
- *
- * @author Grzegorz Ziemski
  */
 public abstract class Shipment implements Serializable {
 
@@ -64,10 +62,4 @@ public abstract class Shipment implements Serializable {
     return new HashCodeBuilder(17, 37).append(id).append(documentBody).append(endpoint)
         .toHashCode();
   }
-
-  @Override
-  public String toString() {
-    return "Shipment [id=" + id + ", documentBody=" + documentBody + ", endpoint=" + endpoint + "]";
-  }
-
 }

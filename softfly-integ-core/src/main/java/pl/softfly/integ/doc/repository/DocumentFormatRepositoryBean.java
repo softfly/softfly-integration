@@ -7,8 +7,6 @@ import pl.softfly.integ.doc.entity.DocumentFormat;
 
 /**
  * Repository.
- *
- * @author Grzegorz Ziemski
  */
 public class DocumentFormatRepositoryBean {
 
@@ -52,6 +50,4 @@ public class DocumentFormatRepositoryBean {
       DocumentBusinessTypeRepositoryBean documentBusinessTypeRepository) {
     this.documentBusinessTypeRepository = documentBusinessTypeRepository;
   }
-
-
 }
