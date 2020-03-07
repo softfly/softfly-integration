@@ -1,4 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-softfly-integ-samples-invoice-java,pl.softfly.integ.samples.invoice.entity,InvoiceDocumentStatus,0,94,0,0,0,10,0,1,0,1
-softfly-integ-samples-invoice-java,pl.softfly.integ.samples.invoice.flows,ForwardDocumentFlowResponse,10,14,0,0,4,6,3,4,3,4
-softfly-integ-samples-invoice-java,pl.softfly.integ.samples.invoice.flows,ForwardDocumentFlowBean,61,353,8,34,26,84,15,29,7,16

@@ -11,6 +11,8 @@ pl.softfly.integ.endpoint.repository
 pl.softfly.integ.entity
 pl.softfly.integ.samples.invoice.entity
 pl.softfly.integ.samples.invoice.flows
+pl.softfly.integ.samples.invoice.javase.flows
 pl.softfly.integ.shipment.entity
 pl.softfly.integ.shipment.in
 pl.softfly.integ.shipment.out
+pl.softfly.integ.utils

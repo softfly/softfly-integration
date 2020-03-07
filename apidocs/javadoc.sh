@@ -1,0 +1,1 @@
+/usr/lib/jvm/java-8-oracle/jre/../bin/javadoc -Xdoclint:all -Xdoclint:-missing @options @packages
