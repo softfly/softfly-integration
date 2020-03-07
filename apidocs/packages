@@ -8,6 +8,7 @@ pl.softfly.integ.doc.validation.schema
 pl.softfly.integ.doc.recognize
 pl.softfly.integ.doc.parser
 pl.softfly.integ.doc.repository
+pl.softfly.integ.doc.utils
 pl.softfly.integ.entity
 pl.softfly.integ.endpoint.entity
 pl.softfly.integ.endpoint
