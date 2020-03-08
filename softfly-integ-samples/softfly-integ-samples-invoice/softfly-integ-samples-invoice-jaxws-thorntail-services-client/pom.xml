@@ -1,0 +1,92 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>pl.softfly.integ.samples.invoice</groupId>
+    <artifactId>softfly-integ-samples-invoice</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>softfly-integ-samples-invoice-jaxws-thorntail-services-client</artifactId>
+  <name>softfly-integ-samples-invoice-jaxws-thorntail-services-client</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>pl.softfly.integ</groupId>
+      <artifactId>softfly-integ-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/src/generated-sources/wsimport</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>generate-jaxws-client</id>
+      <build>
+        <finalName>jaxws-client</finalName>
+        <plugins>
+          <plugin>
+            <!-- wsimport for web service classes generation -->
+            <groupId>com.helger.maven</groupId>
+            <artifactId>jaxws-maven-plugin</artifactId>
+            <version>2.6.2</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>wsimport</goal>
+                </goals>
+                <configuration>
+                  <wsdlUrls>
+                    <wsdlUrl>http://localhost:8080/DocumentRecognizeFormat?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/DocumentValidationSchema?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/DocumentValidationBusiness?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/DocumentParser?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/DocumentTransformation?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/OutgoingShipment?wsdl</wsdlUrl>
+                    <wsdlUrl>http://localhost:8080/SenderEndpoint?wsdl</wsdlUrl>
+                  </wsdlUrls>
+                  <verbose>true</verbose>
+                  <sourceDestDir>${basedir}/src/generated-sources/wsimport</sourceDestDir>
+                  <target>2.1</target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
