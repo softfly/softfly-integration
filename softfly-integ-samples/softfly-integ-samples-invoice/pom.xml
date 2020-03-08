@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -14,11 +15,16 @@
   <packaging>pom</packaging>
 
   <name>softfly-integ-samples-invoice</name>
-  <description>The example application that transmits an invoice from the seller to the buyer.</description>
+  <description>The example application that transmits an invoice from the seller to the buyer.
+  </description>
 
   <modules>
     <module>softfly-integ-samples-invoice-common</module>
-	<module>softfly-integ-samples-invoice-javase</module>
+    <module>softfly-integ-samples-invoice-javase</module>
+    <module>softfly-integ-samples-invoice-jaxws-thorntail-services</module>
+    <module>softfly-integ-samples-invoice-jaxws-thorntail-services-client</module>
+    <module>softfly-integ-samples-invoice-jaxws-thorntail-flow</module>
+    <module>softfly-integ-samples-invoice-jaxws-thorntail-flow-client</module>
   </modules>
 
 </project>

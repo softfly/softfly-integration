@@ -10,15 +10,11 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>softfly-integ-core</artifactId>
+  <artifactId>softfly-integ-api</artifactId>
   <packaging>jar</packaging>
-  <name>softfly-integ-core</name>
+  <name>softfly-integ-api</name>
 
   <dependencies>
-    <dependency>
-      <groupId>pl.softfly.integ</groupId>
-      <artifactId>softfly-integ-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>

@@ -24,12 +24,12 @@
     <developer>
       <id>gziemski</id>
       <name>Grzegorz Ziemski</name>
-      <email>ziemski@gmail.com</email>
       <url>https://github.com/softfly/</url>
     </developer>
   </developers>
 
   <modules>
+	<module>softfly-integ-api</module>
     <module>softfly-integ-core</module>
     <module>softfly-integ-samples</module>
   </modules>
@@ -72,6 +72,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>pl.softfly.integ</groupId>
+        <artifactId>softfly-integ-api</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
       <dependency>
         <groupId>pl.softfly.integ</groupId>
         <artifactId>softfly-integ-core</artifactId>

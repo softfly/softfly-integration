@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import pl.softfly.integ.doc.entity.DocumentBody;
+import pl.softfly.integ.doc.entity.DocumentBusinessType;
 import pl.softfly.integ.doc.entity.DocumentFormat;
 import pl.softfly.integ.doc.entity.DocumentHeader;
 import pl.softfly.integ.doc.entity.ProcessingLog;
@@ -170,7 +171,7 @@ public class ForwardDocumentFlowBean {
         // sent.
         DocumentHeader documentHeaderIn = createOutgoingShipmentRequest(documentHeader);
         Collection<ShipmentOutgoing> shipmentsOut = outgoingShipment.determine(documentHeaderIn);
-        if (shipmentsOut != null) {
+        if (CollectionUtils.isEmpty(shipmentsOut)) {
           mergeOutgoingShipmentResponse(documentHeader, shipmentsOut);
 
           for (ShipmentOutgoing shipment : getDocumentHeaderRepository()
@@ -307,7 +308,7 @@ public class ForwardDocumentFlowBean {
   protected ProcessingLog transformBeforeValidateDocumentBusiness(DocumentHeader documentHeader) {
     List<DocumentFormat> supportedDocumentFormatsOut =
         getDocumentValidationBusiness()
-            .getSupported(new LinkedList(documentHeader.getDocumentBusinessType()));
+            .getSupported(new LinkedList<DocumentBusinessType>(documentHeader.getDocumentBusinessType()));
 
     // 3.1.
     if (documentHeader.getBodies().stream()

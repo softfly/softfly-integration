@@ -62,7 +62,7 @@ public class TransformOutgoingShipmentBean extends OutgoingShipmentBean {
         // 3.1.
         boolean supported =
             getDocumentTransformation().isSupported(sourceDocumentFormat, targetDocumentFormat);
-        if (added && supported && !documentHeader.getShipments().contains(shipmentsOut)) {
+        if (added && supported && !documentHeader.getShipments().contains(shipmentOut)) {
           // 4. With transform
           shipmentOut.setCost(100);// TODO implement the cost system
           shipmentOut.setStatus(ShipmentOutgoingStatus.AWAITING_SEND);
